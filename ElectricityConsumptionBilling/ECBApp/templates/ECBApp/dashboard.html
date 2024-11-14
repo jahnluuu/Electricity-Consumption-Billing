@@ -1,0 +1,11 @@
+<h2>Dashboard</h2>
+<p>Welcome, {{ request.user.first_name }}!</p>
+<a href="{% url 'logout' %}">Logout</a>
+<h3>Your Bills:</h3>
+<ul>
+    {% for bill in bills %}
+        <li>Bill ID: {{ bill.billID }}, Total Amount: {{ bill.totalAmount }}</li>
+    {% empty %}
+        <li>No bills available.</li>
+    {% endfor %}
+</ul>
