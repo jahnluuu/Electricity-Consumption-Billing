@@ -5,16 +5,21 @@
 
 <a href="{% url 'profile' %}">Profile</a>
 
-<h3>Your Bills:</h3>
+<h2>Bills</h2>
 <ul>
     {% for bill in bills %}
-        <li>
-            <strong>Bill ID:</strong> {{ bill.billID }}<br>
-            <strong>Total Amount:</strong> {{ bill.totalAmount }}<br>
-            <strong>Due Date:</strong> {{ bill.dueDate }}<br>
-            <hr>
-        </li>
+    <li>Bill ID: {{ bill.billID }} | Amount: {{ bill.totalAmount }} | Due: {{ bill.dueDate }}</li>
     {% empty %}
         <li>No bills available.</li>
     {% endfor %}
+</ul>
+
+<h2>Payment History</h2>
+<ul>
+    {% for payment in payments %}
+    <li>Payment ID: {{ payment.paymentID }} | Amount: {{ payment.amountPaid }} | Date: {{ payment.paymentDate }}</li>
+    {% empty %}
+    <li>No payments made yet.</li>
+    {% endfor %}
+</ul>
 </ul>
