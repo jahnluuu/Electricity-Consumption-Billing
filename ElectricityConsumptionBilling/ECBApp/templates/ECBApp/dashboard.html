@@ -1,10 +1,19 @@
+<!-- dashboard.html -->
 <h2>Dashboard</h2>
 <p>Welcome, {{ request.user.first_name }}!</p>
 <a href="{% url 'logout' %}">Logout</a>
+
+<a href="{% url 'profile' %}">Profile</a>
+
 <h3>Your Bills:</h3>
 <ul>
     {% for bill in bills %}
-        <li>Bill ID: {{ bill.billID }}, Total Amount: {{ bill.totalAmount }}</li>
+        <li>
+            <strong>Bill ID:</strong> {{ bill.billID }}<br>
+            <strong>Total Amount:</strong> {{ bill.totalAmount }}<br>
+            <strong>Due Date:</strong> {{ bill.dueDate }}<br>
+            <hr>
+        </li>
     {% empty %}
         <li>No bills available.</li>
     {% endfor %}

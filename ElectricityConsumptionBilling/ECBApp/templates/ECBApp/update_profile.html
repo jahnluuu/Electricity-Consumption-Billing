@@ -1,0 +1,24 @@
+{% block content %}
+<h2>Update Profile</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <fieldset>
+        <legend>Profile Information</legend>
+        {{ profile_form.as_p }}
+    </fieldset>
+
+    <fieldset>
+        <legend>Change Password</legend>
+        {{ password_form.as_p }}
+    </fieldset>
+
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+{% endblock %}

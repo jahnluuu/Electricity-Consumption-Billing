@@ -1,0 +1,11 @@
+<!-- profile.html -->
+<h2>Profile</h2>
+<p><strong>Username:</strong> {{ request.user.username }}</p>
+<p><strong>First Name:</strong> {{ request.user.first_name }}</p>
+<p><strong>Last Name:</strong> {{ request.user.last_name }}</p>
+<p><strong>Email:</strong> {{ request.user.email }}</p>
+<p><strong>Phone Number:</strong> {{ request.user.phone_number }}</p>
+<p><strong>Address:</strong> {{ request.user.address }}</p>
+
+<a href="{% url 'update_profile' %}">Update Profile</a>
+<a href="{% url 'dashboard' %}">Back to Dashboard</a>
