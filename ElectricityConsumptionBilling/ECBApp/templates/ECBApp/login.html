@@ -1,8 +1,44 @@
-<h2>Login</h2>
-<form method="post">
-    {% csrf_token %}
-    <label for="username">Username:</label><input type="text" name="username" id="username" required><br>
-    <label for="password">Password:</label><input type="password" name="password" id="password" required><br>
-    <button type="submit">Login</button>
-</form>
-<a href="{% url 'register' %}">Create an account</a>
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+<body>
+    <div class="login-container">
+        <!-- Left Side: Login Form -->
+        <div class="form-container">
+            
+            <div class="form-content">
+                <div class="logo-container">
+                    <img src="{% static 'images/ecblogo.png' %}" alt="ECB Logo" class="logo">
+                </div>
+                <h2>Sign in</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <label for="username">User name or email address</label>
+                        <input type="text" name="username" id="username" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="password">Your password</label>
+                        <input type="password" name="password" id="password" required>
+                        <a href="#" class="password-toggle">Hide</a>
+                    </div>
+                    <a href="#" class="forgot-password">Forget your password?</a>
+                    <button type="submit" class="btn-login">Sign in</button>
+                </form>
+                <p class="signup-text">Don’t have an account? <a href="{% url 'register' %}">Sign up</a></p>
+            </div>
+        </div>
+        <!-- Right Side: Image -->
+        <div class="image-container">
+            <img src="{% static 'images/loginbackground.jpg' %}" alt="Background image">
+        </div>
+    </div>
+</body>
+</html>

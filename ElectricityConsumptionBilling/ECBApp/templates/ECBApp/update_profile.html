@@ -1,24 +1,90 @@
-{% block content %}
-<h2>Update Profile</h2>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Profile</title>
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <img src="{% static 'images/ecblogo.png' %}" alt="Logo">
+                <h2>Electricity Consumption<br>Bill</h2>
+            </div>
+            <nav class="menu">
+                <a href="{% url 'dashboard' %}">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="#">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </a>
+                <a href="#">
+                    <i class="fas fa-user-cog"></i> Manage User
+                </a>
+                <a href="#">
+                    <i class="fas fa-file-invoice-dollar"></i> Generate Bill
+                </a>
+                <a href="{% url 'profile' %}">
+                    <i class="fas fa-user-circle"></i> Profile
+                </a>
+               
+            </nav>
+            <a href="{% url 'logout' %}" class="logout-btn">
+                Logout
+            </a>
+        </div>
 
-<form method="post">
-    {% csrf_token %}
-    <fieldset>
-        <legend>Profile Information</legend>
-        {{ profile_form.as_p }}
-    </fieldset>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="breadcrumb">
+                    <p>Pages / Update Profile</p>
+                    <h1>Update Profile</h1>
+                </div>
+                <div class="user-settings">
+                    <input type="text" placeholder="Search">
+                    <div class="toggle-theme">
+                        <i class="fas fa-sun"></i>
+                        <i class="fas fa-moon"></i>
+                    </div>
+                    <img src="{% static 'images/profile-pic.png' %}" alt="User">
+                </div>
+            </div>
 
-    <fieldset>
-        <legend>Change Password</legend>
-        {{ password_form.as_p }}
-    </fieldset>
+            <!-- Update Profile Form -->
+            <div class="form-card">
+                <h2>Update Your Profile</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <fieldset>
+                        <legend>Profile Information</legend>
+                        {{ profile_form.as_p }}
+                    </fieldset>
 
-    <button type="submit" class="btn btn-primary">Update</button>
-</form>
+                    <fieldset>
+                        <legend>Change Password</legend>
+                        {{ password_form.as_p }}
+                    </fieldset>
 
-{% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-    {% endfor %}
-{% endif %}
-{% endblock %}
+                    <button type="submit" class="btn">Update</button>
+                </form>
+
+                {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

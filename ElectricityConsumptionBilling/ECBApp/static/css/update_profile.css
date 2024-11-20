@@ -1,60 +1,82 @@
-/* CSS for styling the form */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-.form-container {
-    background-color: #ffffff;
-    padding: 20px 40px;
+/* Update Profile */
+/* Form Card */
+/* Form Card */
+.form-card {
+    background: #fff;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
-    width: 100%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    margin-top: 20px;
+    height: 80vh; /* Adjusted height to fit the content */
+    overflow-y: auto; /* Ensures the content scrolls if it's too long */
 }
 
-h2 {
-    text-align: center;
-    color: #333;
+/* Form Card Header */
+.form-card h2 {
+    font-size: 24px;
+    font-weight: bold;
     margin-bottom: 20px;
+    color: #333;
 }
 
-form p {
-    margin: 10px 0;
-}
-
-button[type="submit"] {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px;
+/* Form Elements */
+form fieldset {
     border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
+    margin-bottom: 20px;
+    padding: 0;
+}
+
+form legend {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #f44336;
+}
+
+form input, form select, form textarea {
     width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+form button {
+    background: linear-gradient(90deg, #ff3b58, #ff7a38);
+    color: #fff;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background: linear-gradient(90deg, #eb082a, #f3590b);
+}
+
+/* Message Alerts */
+.messages {
     margin-top: 20px;
 }
 
-button[type="submit"]:hover {
-    background-color: #45a049;
+.alert {
+    padding: 12px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-size: 14px;
 }
 
-.back-link {
-    display: block;
-    text-align: center;
-    margin-top: 15px;
-    color: #4CAF50;
-    text-decoration: none;
-    transition: color 0.3s;
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
 }
 
-.back-link:hover {
-    color: #45a049;
+.alert-error, .alert-danger {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
 }

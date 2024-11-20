@@ -1,0 +1,52 @@
+/* Container for the chart, acting like a stat-box */
+.chart-container {
+    width: 100%;
+    max-width: 400px; /* You can adjust the max-width to fit your design */
+    height: 300px; /* Adjust the height to your preference */
+    padding: 15px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    margin: 20px auto;
+}
+
+/* Title and Legend Styling */
+.chart-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.legend-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.chart-legend {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    gap: 20px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+}
+
+.legend-box {
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+    margin-right: 5px;
+}
+
+/* Ensuring the chart fits nicely within the container */
+#paymentAnalysisChart {
+    width: 100%;
+    height: 100%;
+    display: block;
+    margin: 0 auto;
+}

@@ -1,11 +1,86 @@
-<!-- profile.html -->
-<h2>Profile</h2>
-<p><strong>Username:</strong> {{ request.user.username }}</p>
-<p><strong>First Name:</strong> {{ request.user.first_name }}</p>
-<p><strong>Last Name:</strong> {{ request.user.last_name }}</p>
-<p><strong>Email:</strong> {{ request.user.email }}</p>
-<p><strong>Phone Number:</strong> {{ request.user.phone_number }}</p>
-<p><strong>Address:</strong> {{ request.user.address }}</p>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <img src="{% static 'images/ecblogo.png' %}" alt="Logo">
+                <h2>Electricity Consumption<br>Bill</h2>
+            </div>
+            <nav class="menu">
+                <a href="{% url 'dashboard' %}">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="#">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </a>
+                <a href="#">
+                    <i class="fas fa-user-cog"></i> Manage User
+                </a>
+                <a href="#">
+                    <i class="fas fa-file-invoice-dollar"></i> Generate Bill
+                </a>
+                <a href="{% url 'profile' %}" class="active">
+                    <i class="fas fa-user-circle"></i> Profile
+                </a>
+            </nav>
+            <a href="{% url 'logout' %}" class="logout-btn">
+                Logout
+            </a>
+        </div>
 
-<a href="{% url 'update_profile' %}">Update Profile</a>
-<a href="{% url 'dashboard' %}">Back to Dashboard</a>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="breadcrumb">
+                    <p>Pages / Profile</p>
+                    <h1>User Profile</h1>
+                </div>
+                <div class="user-settings">
+                    <input type="text" placeholder="Search">
+                    <div class="toggle-theme">
+                        <i class="fas fa-sun"></i>
+                        <i class="fas fa-moon"></i>
+                    </div>
+                    <img src="{% static 'images/profile-pic.png' %}" alt="User">
+                </div>
+            </div>
+
+            <!-- Profile Details -->
+            <div class="profile-card">
+                <div class="profile-header">
+                    <h2>Your Profile</h2>
+                </div>
+                <div class="profile-content">
+                    <div class="profile-image">
+                        <img src="{% static 'images/profile-pic.png' %}" alt="User Image">
+                    </div>
+                    <div class="profile-info">
+                        <h2>Profile Information</h2>
+                        <p><strong>Username:</strong> {{ request.user.username }}</p>
+                        <p><strong>First Name:</strong> {{ request.user.first_name }}</p>
+                        <p><strong>Last Name:</strong> {{ request.user.last_name }}</p>
+                        <p><strong>Email:</strong> {{ request.user.email }}</p>
+                        <p><strong>Phone Number:</strong> {{ request.user.phone_number }}</p>
+                        <p><strong>Address:</strong> {{ request.user.address }}</p>
+        
+                        <div class="actions">
+                            <a href="{% url 'update_profile' %}" class="btn">Update Profile</a>
+                            <a href="{% url 'dashboard' %}" class="btn secondary">Back to Dashboard</a>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</body>
+</html>
