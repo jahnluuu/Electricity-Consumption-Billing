@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Bill</title>
+    <link rel="stylesheet" href="{% static 'css/view_bill.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="{% static 'js/script.js' %}" defer></script>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="logo">
+                <img src="{% static 'images/ecblogo.png' %}" alt="Logo">
+                <h2>Electricity Consumption<br>Bill</h2>
+            </div>
+            <nav class="menu">
+                <a href="{% url 'dashboard' %}" class="active">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="#">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </a>
+                <a href="#">
+                    <i class="fas fa-user-cog"></i> Manage User
+                </a>
+                <a href="{% url 'view_bill' %}">
+                    <i class="fas fa-file-invoice-dollar"></i> View Bill
+                </a>
+                <a href="{% url 'profile' %}">
+                    <i class="fas fa-user-circle"></i> Profile
+                </a>
+            </nav>
+            <a href="{% url 'logout' %}" class="logout-btn">
+                Logout
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="breadcrumb">
+                    <p>Pages / View Bill</p>
+                    <h1>View Bill</h1>
+                </div>
+                <div class="user-settings">
+                    <input type="text" placeholder="Search">
+                    <div class="toggle-theme">
+                        <i class="fas fa-sun"></i>
+                        <i class="fas fa-moon"></i>
+                    </div>
+                    <img src="{% static 'images/profile-pic.png' %}" alt="User">
+                </div>
+            </div>
+        
+            {% if bills_and_consumptions %}
+                <div class="bill-details">
+                    {% for entry in bills_and_consumptions %}
+                        <div class="bill-entry">
+                            <p>Reading Date From: {{ entry.consumption.readingDateFrom }}</p>
+                            <p>Reading Date To: {{ entry.consumption.readingDateTo }}</p>
+                            <p>Total Consumption (kWh): {{ entry.consumption.totalConsumption }}</p>
+                            <p>Total Amount (Php): {{ entry.bill.totalAmount }}</p>
+                            <p>Due Date: {{ entry.bill.dueDate }}</p>
+                        </div>
+                    {% empty %}
+                        <p>No billing details available for you at the moment.</p>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No billing details available for you at the moment.</p>
+            {% endif %}
+
+            <!-- Pay Now Button -->
+            <a href="#" class="pay-btn">Pay Now</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import CustomerPasswordUpdateForm, CustomerRegistrationForm, ProfileForm
+from .forms import CustomerRegistrationForm, ProfileForm, CustomerPasswordUpdateForm
 from django.contrib.auth import update_session_auth_hash
 from .models import Customer, Profile, Tariff, Consumption, Bill, Payment, BillingDetails
 from django.db.models import Sum
@@ -97,12 +97,11 @@ def update_profile(request):
 
     if request.method == 'POST':
         profile_form = ProfileForm(request.POST, instance=customer)
-        password_form = CustomerPasswordUpdateForm(request.POST)
+        password_form = CustomerPasswordUpdateForm(request.POST)  
 
         if profile_form.is_valid():
-            profile_form.save()  # Save profile details
+            profile_form.save()  
 
-            # Check if password fields are filled
             new_password1 = request.POST.get('new_password1')
             new_password2 = request.POST.get('new_password2')
 
@@ -110,7 +109,7 @@ def update_profile(request):
                 if password_form.is_valid():
                     customer.set_password(password_form.cleaned_data['new_password1'])
                     customer.save()
-                    update_session_auth_hash(request, customer)  # Keeps the user logged in
+                    update_session_auth_hash(request, customer) 
                     messages.success(request, "Profile and password updated successfully.")
                 else:
                     messages.error(request, "Password update failed. Please check the fields.")
@@ -122,7 +121,7 @@ def update_profile(request):
             messages.error(request, "Please correct the errors below.")
     else:
         profile_form = ProfileForm(instance=customer)
-        password_form = CustomerPasswordUpdateForm()
+        password_form = CustomerPasswordUpdateForm() 
 
     return render(
         request,
@@ -133,9 +132,23 @@ def update_profile(request):
         }
     )
 
-
 @login_required
 def payment_history(request):
     payments = Payment.objects.filter(bill__customer=request.user)
     context = {'payments': payments}
     return render(request, 'payment_history.html', context)
+
+@login_required
+def view_bill(request):
+    print(request.user)  # Check if the user is correct
+    user_consumption = Consumption.objects.filter(customer=request.user)
+    print(user_consumption) 
+
+    billing_details = BillingDetails.objects.select_related('bill', 'consumption').filter(consumption__customer=request.user)
+    print(billing_details)
+
+    context = {
+        'bills_and_consumptions': billing_details
+    }
+
+    return render(request, 'ECBApp/view_bill.html', context)

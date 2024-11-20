@@ -50,17 +50,15 @@ class Consumption(models.Model):
     totalConsumption = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        # Save the Consumption first
         super().save(*args, **kwargs)
 
-        # Create or update the Bill associated with the consumption
         bill, created = Bill.objects.get_or_create(
             customer=self.customer,
-            billDate=self.readingDateFrom,  # Use readingDateFrom for billDate
+            billDate=self.readingDateFrom,  
             defaults={
-                'dueDate': self.readingDateTo + timedelta(days=30),  # Set default dueDate
-                'tariff': Tariff.objects.latest('effectiveDate'),  # Set the latest tariff
-                'totalAmount': 0  # Default totalAmount
+                'dueDate': self.readingDateTo + timedelta(days=30),  
+                'tariff': Tariff.objects.latest('effectiveDate'),  
+                'totalAmount': 0  
             }
         )
     def __str__(self):
@@ -70,7 +68,7 @@ class Bill(models.Model):
     billID = models.AutoField(primary_key=True)
     billDate = models.DateField()
     totalAmount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    dueDate = models.DateField(default=date.today)  # Ensure this is not null
+    dueDate = models.DateField(default=date.today)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     tariff = models.ForeignKey(Tariff, on_delete=models.CASCADE)
 
