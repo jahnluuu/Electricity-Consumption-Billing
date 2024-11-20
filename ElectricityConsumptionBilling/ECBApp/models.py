@@ -64,33 +64,35 @@ class Consumption(models.Model):
             }
         )
 
-        # If the Bill was created, set the dueDate and calculate totalAmount
-        if created:
-            # Ensure totalConsumption is not None before processing
-            if self.totalConsumption is not None:
-                tariff = Tariff.objects.latest('effectiveDate')  # Get the latest tariff
-                bill.totalAmount = self.totalConsumption * tariff.ratePerKwh  # Calculate totalAmount
-                bill.dueDate = self.readingDateTo + timedelta(days=30)  # Set dueDate 30 days after readingDateTo
-                bill.save()  # Save the Bill with the updated totalAmount and dueDate
-        else:
-            if self.totalConsumption is not None:
-                tariff = Tariff.objects.latest('effectiveDate')  # Use the tariff from the existing Bill
-                bill.totalAmount = self.totalConsumption * tariff.ratePerKwh  # Recalculate totalAmount
-                bill.save()  # Save the updated Bill
+       
 
     def __str__(self):
         return f"Consumption {self.consumptionID} for {self.customer.first_name} {self.customer.last_name}"
 
 class Bill(models.Model):
+    STATUS_CHOICES = [
+        ('Paid', 'Paid'),
+        ('Pending', 'Pending'),
+        ('Overdue', 'Overdue'),
+    ]
+
     billID = models.AutoField(primary_key=True)
     billDate = models.DateField()
     totalAmount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    dueDate = models.DateField(default=date.today)  # Ensure this is not null
+    dueDate = models.DateField(default=date.today)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     tariff = models.ForeignKey(Tariff, on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
 
-    def __str__(self):
-        return f"Bill {self.billID} - {self.customer} - {self.tariff}"
+    def save(self, *args, **kwargs):
+        # Auto-update status
+        if self.totalAmount == 0:
+            self.status = 'Paid'
+        elif self.dueDate < date.today():
+            self.status = 'Overdue'
+        else:
+            self.status = 'Pending'
+        super().save(*args, **kwargs)
     
 
 class BillingDetails(models.Model):
@@ -152,3 +154,17 @@ def create_or_update_bill(sender, instance, created, **kwargs):
                 tariff=tariff
             )
             print(f"Created Bill with due date: {bill.dueDate}")
+
+@receiver(post_save, sender=Payment)
+def update_bill_status_on_payment(sender, instance, **kwargs):
+    bill = instance.bill
+    total_paid = Payment.objects.filter(bill=bill).aggregate(total=Sum('amountPaid'))['total'] or 0
+
+    if total_paid >= bill.totalAmount:  # Check if the bill is fully paid
+        bill.status = 'Paid'
+        bill.totalAmount = 0  # Optionally clear the total amount due
+    else:
+        bill.status = 'Pending'
+    
+    bill.save()
+            

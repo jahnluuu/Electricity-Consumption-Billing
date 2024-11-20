@@ -1,4 +1,6 @@
 {% load static %}
+{% load custom_filters %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,8 +30,8 @@
                 <a href="#">
                     <i class="fas fa-user-cog"></i> Manage User
                 </a>
-                <a href="#">
-                    <i class="fas fa-file-invoice-dollar"></i> Generate Bill
+                <a href="{% url 'view_bill' %}">
+                    <i class="fas fa-file-invoice-dollar"></i> View Bill
                 </a>
                 <a href="{% url 'profile' %}">
                     <i class="fas fa-user-circle"></i> Profile
@@ -61,18 +63,52 @@
             </div>
 
             <!-- Statistic Boxes -->
-
+            <div class="stat-boxes">
                 <div class="stat-box">
                     <i class="fas fa-coins"></i>
-                    <h3>Total Payments</h3>
-                    {% if total_amount > 0 %}
-                        <p>₱<span id="total-payments">{{ total_amount }}</span></p>
-                    {% else %}
-                        <p>No payments available</p>
-                    {% endif %}
+                    <h3>Pending Payments</h3>
+                    <p>₱{{ total_due }}</p>
                 </div>
-                
+                <div class="stat-box">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Total Paid</h3>
+                    <p>₱{{ total_paid }}</p>
+                </div>
+                <div class="stat-box">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Overdue Bills</h3>
+                    <p>{{ overdue_bills }}</p>
+                </div>
+            </div>
                 <!-- graph Chart.js -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Bill Date</th>
+                            <th>Total Amount</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bill in bills %}
+                        <tr class="{% if bill.status == 'Overdue' %}overdue{% endif %}">
+                            <td>{{ bill.billDate }}</td>
+                            <td>₱{{ bill.totalAmount }}</td>
+                            <td>{{ bill.status }}</td>
+                            <td>
+                                {% if bill.status == 'Pending' %}
+                                <a href="{% url 'initiate_payment' bill.billID %}" class="btn">Pay Now</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4">No bills available.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
                 
                 <!-- Include Chart.js -->
                 <div class="chart-container">
