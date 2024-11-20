@@ -1,0 +1,233 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    background-color: #f5f9ff;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background-color: #ffffff;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar .logo {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.sidebar .logo img {
+    margin-bottom: 0px;
+    width: 150px;
+    height: auto;
+    margin-bottom: -5px; /* Use negative margin to overlap the text closer to the image */
+}
+
+.sidebar .logo h2 {
+    font-size: 18px;
+    color: #555;
+    font-weight: bold;
+    line-height: 1; /* Tighten the text spacing */
+    margin-top: 0; /* Remove any default margin above the text */
+}
+
+.sidebar .menu {
+    width: 100%;
+    margin-bottom: auto;
+}
+
+.sidebar .menu a {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    font-size: 16px;
+    color: #555;
+    text-decoration: none;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebar .menu a i {
+    margin-right: 10px;
+}
+
+.sidebar .menu a.active,
+.sidebar .menu a:hover {
+    background-color: #f5f9ff;
+    color: #333;
+}
+
+.logout-btn {
+    padding: 10px 50px;
+    background: linear-gradient(90deg, #ff3b58, #ff7a38);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 1px;
+    transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+    background: linear-gradient(90deg, #eb082a, #f3590b);
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header .breadcrumb {
+    display: flex;
+    flex-direction: column;
+}
+
+.header .breadcrumb p {
+    color: #777;
+    margin: 0;
+}
+
+.header .breadcrumb h1 {
+    font-size: 24px;
+    margin: 5px 0;
+}
+
+.header .breadcrumb .branch {
+    color: #f44336;
+    font-weight: bold;
+}
+
+.user-settings {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.user-settings input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    outline: none;
+    width: 200px;
+}
+
+.user-settings img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.toggle-theme {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 16px;
+}
+
+/* Stat Boxes */
+.stat-boxes {
+    display: flex;
+    gap: 20px;
+}
+
+.stat-box {
+    flex: 1;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stat-box i {
+    font-size: 24px;
+    color: #6574ff;
+    margin-bottom: 10px;
+}
+
+.stat-box h3 {
+    color: #777;
+    margin: 0;
+}
+
+.stat-box p {
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Container for the chart, acting like a stat-box */
+.chart-container {
+    width: 100%;
+    max-width: 400px; /* You can adjust the max-width to fit your design */
+    height: 300px; /* Adjust the height to your preference */
+    padding: 15px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    margin: 20px auto;
+}
+
+/* Title and Legend Styling */
+.chart-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.legend-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.chart-legend {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    gap: 20px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+}
+
+.legend-box {
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+    margin-right: 5px;
+}
+
+/* Ensuring the chart fits nicely within the container */
+#paymentAnalysisChart {
+    width: 100%;
+    height: 100%;
+    display: block;
+    margin: 0 auto;
+}

@@ -6,6 +6,9 @@ from .forms import CustomerRegistrationForm, ProfileForm, CustomerPasswordChange
 from django.contrib.auth import update_session_auth_hash
 from .models import Customer, Profile, Tariff, Consumption, Bill, Payment, BillingDetails
 from django.db.models import Sum
+from django.db.models.functions import TruncMonth
+import json
+from decimal import Decimal
 
 def register(request):
     if request.method == 'POST':
@@ -37,31 +40,49 @@ def logout_view(request):
 
 @login_required
 def dashboard(request):
-    # Fetch BillingDetails for the logged-in user
-    billing_details = BillingDetails.objects.filter(consumption__customer=request.user)
-
-    # Aggregate total consumption and total amount using BillingDetails
-    total_consumption = billing_details.aggregate(
-        total_consumption=Sum('consumption__totalConsumption')
-    )['total_consumption']  # Sum up total consumption
-
-    total_amount = billing_details.aggregate(
-        total_amount=Sum('bill__totalAmount')
-    )['total_amount']  # Sum up total amount
-
-    # Payments related to the user's bills
+    # Fetch Bills and Payments for the logged-in user
+    bills = Bill.objects.filter(customer=request.user)
     payments = Payment.objects.filter(bill__customer=request.user)
 
-    # Prepare context with billing details
+    # Aggregate total consumption and total amount
+    billing_details = BillingDetails.objects.filter(consumption__customer=request.user)
+    total_consumption = billing_details.aggregate(
+        total_consumption=Sum('consumption__totalConsumption')
+    )['total_consumption']
+    total_amount = bills.aggregate(total_amount=Sum('totalAmount'))['total_amount'] or 0
+
+    # Monthly Payment Data for Line Graph
+    monthly_payments = (
+        payments.annotate(month=TruncMonth('paymentDate'))
+        .values('month')
+        .annotate(total=Sum('amountPaid'))
+        .order_by('month')
+    )
+
+    # Prepare data for the graph
+    months = [entry['month'].strftime('%b %Y') for entry in monthly_payments]
+    
+    # Convert Decimal to float in payment_totals to avoid JSON serialization issues
+    payment_totals = [float(entry['total']) for entry in monthly_payments]
+
+    # Payment Analysis for Pie Chart
+    payment_analysis = {
+        "done": float(payments.aggregate(done=Sum('amountPaid'))['done'] or 0),
+        "pending": float(bills.aggregate(pending=Sum('totalAmount'))['pending'] or 0),
+    }
+
+    # Pass data to the template
     context = {
-        'billing_details': billing_details,
+        'bills': bills,
         'payments': payments,
         'total_consumption': total_consumption,
-        'total_amount': total_amount
+        'total_amount': total_amount,
+        'months': json.dumps(months),
+        'payment_totals': json.dumps(payment_totals),  # This will now be serializable
+        'payment_analysis': json.dumps(payment_analysis),  # This will now be serializable
     }
 
     return render(request, 'ECBApp/dashboard.html', context)
-
 
 @login_required
 def profile(request):

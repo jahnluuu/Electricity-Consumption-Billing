@@ -80,7 +80,6 @@ class Consumption(models.Model):
 
     def __str__(self):
         return f"Consumption {self.consumptionID} for {self.customer.first_name} {self.customer.last_name}"
-    
 
 class Bill(models.Model):
     billID = models.AutoField(primary_key=True)
