@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import CustomerRegistrationForm, ProfileForm, CustomerPasswordChangeForm
+from .forms import CustomerPasswordUpdateForm, CustomerRegistrationForm, ProfileForm
 from django.contrib.auth import update_session_auth_hash
 from .models import Customer, Profile, Tariff, Consumption, Bill, Payment, BillingDetails
 from django.db.models import Sum
@@ -97,27 +97,32 @@ def update_profile(request):
 
     if request.method == 'POST':
         profile_form = ProfileForm(request.POST, instance=customer)
-        password_form = CustomerPasswordChangeForm(user=customer, data=request.POST)
+        password_form = CustomerPasswordUpdateForm(request.POST)
 
         if profile_form.is_valid():
-            profile_form.save()  # Save profile details (including first name, last name, and email)
-            
-            if request.POST.get('new_password1') or request.POST.get('new_password2'):  # Check if password fields are filled
+            profile_form.save()  # Save profile details
+
+            # Check if password fields are filled
+            new_password1 = request.POST.get('new_password1')
+            new_password2 = request.POST.get('new_password2')
+
+            if new_password1 or new_password2:
                 if password_form.is_valid():
-                    password_form.save()  # Save the updated password
-                    update_session_auth_hash(request, customer)  # Keeps the user logged in after password change
+                    customer.set_password(password_form.cleaned_data['new_password1'])
+                    customer.save()
+                    update_session_auth_hash(request, customer)  # Keeps the user logged in
                     messages.success(request, "Profile and password updated successfully.")
                 else:
                     messages.error(request, "Password update failed. Please check the fields.")
             else:
                 messages.success(request, "Profile updated successfully without changing password.")
-            
+
             return redirect('profile')
         else:
             messages.error(request, "Please correct the errors below.")
     else:
         profile_form = ProfileForm(instance=customer)
-        password_form = CustomerPasswordChangeForm(user=customer)
+        password_form = CustomerPasswordUpdateForm()
 
     return render(
         request,
@@ -127,6 +132,7 @@ def update_profile(request):
             'password_form': password_form
         }
     )
+
 
 @login_required
 def payment_history(request):

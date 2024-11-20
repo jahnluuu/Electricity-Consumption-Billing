@@ -13,7 +13,9 @@ body, html {
 /* Main Container */
 .login-container {
     display: flex;
-    height: 100vh;
+    flex-direction: row;
+    height: auto;
+    min-height: 100vh;
 }
 
 /* Left Side: Form */

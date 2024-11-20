@@ -10,7 +10,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Sidebar -->
         <div class="sidebar">
             <div class="logo">
                 <img src="{% static 'images/ecblogo.png' %}" alt="Logo">
@@ -70,7 +69,8 @@
 
                     <fieldset>
                         <legend>Change Password</legend>
-                        {{ password_form.as_p }}
+                        {{ password_form.new_password1.label_tag }} {{ password_form.new_password1 }}
+                        {{ password_form.new_password2.label_tag }} {{ password_form.new_password2 }}
                     </fieldset>
 
                     <button type="submit" class="btn">Update</button>

@@ -63,21 +63,6 @@ class Consumption(models.Model):
                 'totalAmount': 0  # Default totalAmount
             }
         )
-
-        # If the Bill was created, set the dueDate and calculate totalAmount
-        if created:
-            # Ensure totalConsumption is not None before processing
-            if self.totalConsumption is not None:
-                tariff = Tariff.objects.latest('effectiveDate')  # Get the latest tariff
-                bill.totalAmount = self.totalConsumption * tariff.ratePerKwh  # Calculate totalAmount
-                bill.dueDate = self.readingDateTo + timedelta(days=30)  # Set dueDate 30 days after readingDateTo
-                bill.save()  # Save the Bill with the updated totalAmount and dueDate
-        else:
-            if self.totalConsumption is not None:
-                tariff = Tariff.objects.latest('effectiveDate')  # Use the tariff from the existing Bill
-                bill.totalAmount = self.totalConsumption * tariff.ratePerKwh  # Recalculate totalAmount
-                bill.save()  # Save the updated Bill
-
     def __str__(self):
         return f"Consumption {self.consumptionID} for {self.customer.first_name} {self.customer.last_name}"
 
