@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -48,40 +48,8 @@ from decimal import Decimal
 
 @login_required
 def dashboard(request):
-    bills = Bill.objects.filter(customer=request.user)
-    payments = Payment.objects.filter(bill__customer=request.user)
 
-    # Summaries
-    total_consumption = bills.aggregate(total=Sum('totalAmount'))['total'] or Decimal('0.0')
-    total_paid = payments.aggregate(total=Sum('amountPaid'))['total'] or Decimal('0.0')
-    total_due = total_consumption - total_paid
-    overdue_bills = bills.filter(dueDate__lt=date.today(), status="Overdue").count()
-
-    # Data for Line Chart
-    monthly_payments = payments.annotate(month=TruncMonth('paymentDate')).values('month').annotate(
-        total=Sum('amountPaid')
-    ).order_by('month')
-
-    months = [entry['month'].strftime('%b %Y') for entry in monthly_payments]
-    payment_totals = [float(entry['total']) for entry in monthly_payments]
-
-    # Pie Chart Data (Convert Decimal to float)
-    payment_analysis = {
-        'done': float(total_paid),  # Convert to float
-        'pending': float(total_due),  # Convert to float
-    }
-
-    context = {
-        'bills': bills,
-        'payments': payments,
-        'total_due': float(total_due),  # Convert to float
-        'total_paid': float(total_paid),  # Convert to float
-        'overdue_bills': overdue_bills,
-        'months': json.dumps(months),
-        'payment_totals': json.dumps(payment_totals),
-        'payment_analysis': json.dumps(payment_analysis),
-    }
-    return render(request, 'ECBApp/dashboard.html', context)
+    return render(request, 'ECBApp/dashboard.html')
 
 @login_required
 def profile(request):
@@ -152,24 +120,43 @@ def usage_history(request):
 
 @login_required
 def initiate_payment(request, bill_id):
-    bill = Bill.objects.get(id=bill_id, customer=request.user)
-    session = stripe.checkout.Session.create(
-        payment_method_types=['card'],
-        line_items=[{
-            'price_data': {
-                'currency': 'usd',
-                'product_data': {
-                    'name': f"Bill {bill.billDate}"
-                },
-                'unit_amount': int(bill.totalAmount * 100),  # Stripe requires cents
-            },
-            'quantity': 1,
-        }],
-        mode='payment',
-        success_url=f"{settings.SITE_URL}/payment_success/{bill.billID}",
-        cancel_url=f"{settings.SITE_URL}/payment_failed/",
-    )
-    return redirect(session.url, code=303)
+    bill = get_object_or_404(Bill, billID=bill_id, customer=request.user)
+
+    if bill.status == 'Paid':
+        messages.error(request, 'This bill is already paid.')
+        return redirect('view_bill')
+
+    if request.method == 'POST':
+        amount_paid = Decimal(request.POST.get('amount_paid', '0.0'))
+        payment_method = request.POST.get('payment_method', '')
+        payment_note = request.POST.get('payment_note', '')
+
+        if amount_paid <= 0 or amount_paid > (bill.totalAmount - bill.get_paid_amount()):
+            messages.error(request, 'Invalid payment amount.')
+            return render(request, 'ECBApp/initiate_payment.html', {'bill': bill})
+
+        # Record payment
+        Payment.objects.create(
+            bill=bill,
+            amountPaid=amount_paid,
+            paymentDate=date.today(),
+            paymentMethod=payment_method,
+            **({'note': payment_note} if hasattr(Payment, 'note') else {})
+        )
+
+        # Update bill status if fully paid
+        total_paid = Payment.objects.filter(bill=bill).aggregate(total=Sum('amountPaid'))['total'] or Decimal('0.0')
+        if total_paid >= bill.totalAmount:
+            bill.status = 'Paid'
+        else:
+            bill.status = 'Pending'
+        bill.save()
+
+        messages.success(request, 'Payment successful!')
+        return redirect('view_bill')
+
+    return render(request, 'ECBApp/initiate_payment.html', {'bill': bill})
+
 
 @login_required
 def payment_success(request, bill_id):
@@ -180,8 +167,7 @@ def payment_success(request, bill_id):
             paymentDate=date.today(),
             amountPaid=bill.totalAmount,
             paymentMethod="Stripe"
-        )
-        bill.totalAmount = 0  # Clear the amount due
+        ) # Clear the amount due
         bill.status = 'Paid'  # Update the status
         bill.save()  # Save the changes
 
@@ -194,17 +180,39 @@ def payment_success(request, bill_id):
 def payment_failed(request):
     messages.error(request, "Payment failed. Please try again.")
     return redirect('dashboard')
+    
 @login_required
 def view_bill(request):
-    print(request.user)  # Check if the user is correct
-    user_consumption = Consumption.objects.filter(customer=request.user)
-    print(user_consumption) 
+    bills = Bill.objects.filter(customer=request.user)
+    payments = Payment.objects.filter(bill__customer=request.user)
 
-    billing_details = BillingDetails.objects.select_related('bill', 'consumption').filter(consumption__customer=request.user)
-    print(billing_details)
+    # Summaries
+    pending_and_overdue_bills = bills.filter(status__in=['Pending', 'Overdue'])
+    total_pending = pending_and_overdue_bills.aggregate(total=Sum('totalAmount'))['total'] or Decimal('0.0')
 
-    context = {
-        'bills_and_consumptions': billing_details
+    total_paid = payments.aggregate(total=Sum('amountPaid'))['total'] or Decimal('0.0')
+    overdue_bills = bills.filter(dueDate__lt=date.today(), status="Overdue").count()
+
+    # Data for Line Chart
+    monthly_payments = payments.annotate(month=TruncMonth('paymentDate')).values('month').annotate(
+        total=Sum('amountPaid')
+    ).order_by('month')
+
+    months = [entry['month'].strftime('%b %Y') for entry in monthly_payments]
+    payment_totals = [float(entry['total']) for entry in monthly_payments]
+
+    # Pie Chart Data (Convert Decimal to float)
+    payment_analysis = {
+        'done': float(total_paid),  # Convert to float
+        'pending': float(total_pending),  # Convert to float
     }
 
-    return render(request, 'ECBApp/view_bill.html', context)
+    return render(request, 'ECBApp/view_bill.html', {
+        'bills': bills,
+        'total_due': total_pending,
+        'total_paid': total_paid,
+        'overdue_bills': overdue_bills,
+        'payment_analysis': json.dumps(payment_analysis),
+        'months': months,
+        'payment_totals': payment_totals,
+    })

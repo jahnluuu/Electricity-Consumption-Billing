@@ -10,10 +10,18 @@ class BillAdmin(admin.ModelAdmin):
     list_filter = ['billDate', 'dueDate', 'tariff']
     fields = ('customer', 'tariff', 'totalAmount', 'dueDate')  
 
+class PaymentAdmin(admin.ModelAdmin):
+    list_display = ('bill', 'amountPaid', 'paymentDate', 'paymentMethod')
+    search_fields = ['bill__billID', 'bill__customer__username']
+    list_filter = ['paymentDate', 'paymentMethod']
+    fields = ('bill', 'amountPaid', 'paymentDate', 'paymentMethod')
+    ordering = ['-paymentDate']
+
 admin.site.register(Customer)
 admin.site.register(Profile)
 admin.site.register(Tariff)
 admin.site.register(Consumption, ConsumptionAdmin)
 admin.site.register(Bill, BillAdmin)
 admin.site.register(BillingDetails)
-admin.site.register(Payment)
+admin.site.register(Payment, PaymentAdmin)
+
