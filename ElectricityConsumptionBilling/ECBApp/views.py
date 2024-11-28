@@ -1,18 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.conf import settings
 from django.contrib import messages
-from .forms import CustomerRegistrationForm, ProfileForm, CustomerPasswordUpdateForm
-from django.contrib.auth import update_session_auth_hash
-from .models import Customer, Profile, Tariff, Consumption, Bill, Payment, BillingDetails
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.db.models.functions import TruncMonth
-import json
+from .forms import CustomerRegistrationForm, ProfileForm, CustomerPasswordUpdateForm
+from .models import Customer, Profile, Tariff, Consumption, Bill, Payment, BillingDetails
 from decimal import Decimal
-import stripe
-from django.conf import settings
 from datetime import date
-
+import json
+import stripe
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 def register(request):
@@ -42,9 +40,6 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
-
-import json
-from decimal import Decimal
 
 @login_required
 def dashboard(request):
@@ -99,24 +94,24 @@ def update_profile(request):
         }
     )
 
-@login_required
-def payment_history(request):
-    payments = Payment.objects.filter(bill__customer=request.user)
-    context = {'payments': payments}
-    return render(request, 'payment_history.html', context)
+# @login_required
+# def payment_history(request):
+#     payments = Payment.objects.filter(bill__customer=request.user)
+#     context = {'payments': payments}
+#     return render(request, 'payment_history.html', context)
 
-@login_required
-def usage_history(request):
-    bills = Bill.objects.filter(customer=request.user).order_by('-billDate')
-    month = request.GET.get('month')
-    year = request.GET.get('year')
+# @login_required
+# def usage_history(request):
+#     bills = Bill.objects.filter(customer=request.user).order_by('-billDate')
+#     month = request.GET.get('month')
+#     year = request.GET.get('year')
 
-    if month and year:
-        bills = bills.filter(billDate__year=year, billDate__month=month)
-    elif year:
-        bills = bills.filter(billDate__year=year)
+#     if month and year:
+#         bills = bills.filter(billDate__year=year, billDate__month=month)
+#     elif year:
+#         bills = bills.filter(billDate__year=year)
 
-    return render(request, 'ECBApp/usage_history.html', {'bills': bills})
+#     return render(request, 'ECBApp/usage_history.html', {'bills': bills})
 
 @login_required
 def initiate_payment(request, bill_id):
@@ -135,7 +130,6 @@ def initiate_payment(request, bill_id):
             messages.error(request, 'Invalid payment amount.')
             return render(request, 'ECBApp/initiate_payment.html', {'bill': bill})
 
-        # Record payment
         Payment.objects.create(
             bill=bill,
             amountPaid=amount_paid,
@@ -144,7 +138,6 @@ def initiate_payment(request, bill_id):
             **({'note': payment_note} if hasattr(Payment, 'note') else {})
         )
 
-        # Update bill status if fully paid
         total_paid = Payment.objects.filter(bill=bill).aggregate(total=Sum('amountPaid'))['total'] or Decimal('0.0')
         if total_paid >= bill.totalAmount:
             bill.status = 'Paid'
@@ -167,9 +160,9 @@ def payment_success(request, bill_id):
             paymentDate=date.today(),
             amountPaid=bill.totalAmount,
             paymentMethod="Stripe"
-        ) # Clear the amount due
-        bill.status = 'Paid'  # Update the status
-        bill.save()  # Save the changes
+        )
+        bill.status = 'Paid'  
+        bill.save()
 
         messages.success(request, "Payment successful!")
     except Bill.DoesNotExist:
@@ -186,14 +179,12 @@ def view_bill(request):
     bills = Bill.objects.filter(customer=request.user)
     payments = Payment.objects.filter(bill__customer=request.user)
 
-    # Summaries
     pending_and_overdue_bills = bills.filter(status__in=['Pending', 'Overdue'])
     total_pending = pending_and_overdue_bills.aggregate(total=Sum('totalAmount'))['total'] or Decimal('0.0')
 
     total_paid = payments.aggregate(total=Sum('amountPaid'))['total'] or Decimal('0.0')
     overdue_bills = bills.filter(dueDate__lt=date.today(), status="Overdue").count()
 
-    # Data for Line Chart
     monthly_payments = payments.annotate(month=TruncMonth('paymentDate')).values('month').annotate(
         total=Sum('amountPaid')
     ).order_by('month')
@@ -201,10 +192,9 @@ def view_bill(request):
     months = [entry['month'].strftime('%b %Y') for entry in monthly_payments]
     payment_totals = [float(entry['total']) for entry in monthly_payments]
 
-    # Pie Chart Data (Convert Decimal to float)
     payment_analysis = {
-        'done': float(total_paid),  # Convert to float
-        'pending': float(total_pending),  # Convert to float
+        'done': float(total_paid),  
+        'pending': float(total_pending),
     }
 
     return render(request, 'ECBApp/view_bill.html', {

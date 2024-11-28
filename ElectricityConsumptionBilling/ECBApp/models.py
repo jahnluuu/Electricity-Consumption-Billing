@@ -74,13 +74,11 @@ class Bill(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
     
     def get_paid_amount(self):
-        # Calculate the sum of all payments related to this bill
         total_paid = self.payment_set.aggregate(Sum('amountPaid'))['amountPaid__sum'] or 0
         
         return total_paid
     
     def save(self, *args, **kwargs):
-        # Auto-update status
         if self.totalAmount == 0:
             self.status = 'Paid'
         elif self.dueDate < date.today():
@@ -89,7 +87,6 @@ class Bill(models.Model):
             self.status = 'Pending'
         super().save(*args, **kwargs)
     
-
 class BillingDetails(models.Model):
     consumption = models.ForeignKey(Consumption, on_delete=models.CASCADE)
     bill = models.ForeignKey(Bill, on_delete=models.CASCADE)

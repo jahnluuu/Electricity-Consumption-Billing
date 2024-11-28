@@ -68,7 +68,7 @@ body {
 .sidebar .menu a.active,
 .sidebar .menu a:hover {
     background-color: #f5f9ff;
-    color: #333;
+    color: #ff3b58;
 }
 
 .logout-btn {
