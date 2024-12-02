@@ -132,3 +132,7 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+STRIPE_SECRET_KEY = 'your_stripe_secret_key'
+STRIPE_PUBLIC_KEY = 'your_stripe_public_key'
+SITE_URL = 'http://127.0.0.1:8000'  # Adjust for production

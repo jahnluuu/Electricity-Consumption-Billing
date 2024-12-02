@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from .models import Customer, Profile
+from django.contrib.auth.password_validation import validate_password
 
 class CustomerRegistrationForm(UserCreationForm):
     first_name = forms.CharField(max_length=50)
@@ -28,8 +29,31 @@ class ProfileForm(forms.ModelForm):
         model = Customer
         fields = ['first_name', 'last_name', 'email', 'phone_number', 'address']
 
-class CustomerPasswordChangeForm(PasswordChangeForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control'
+class CustomerPasswordUpdateForm(forms.Form):
+    new_password1 = forms.CharField(
+        label="New Password",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        required=False,  # Make this field optional
+    )
+    new_password2 = forms.CharField(
+        label="Confirm New Password",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        required=False,  # Make this field optional
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        new_password1 = cleaned_data.get("new_password1")
+        new_password2 = cleaned_data.get("new_password2")
+
+        # If no new passwords are provided, skip validation
+        if new_password1 and new_password2:
+            if new_password1 != new_password2:
+                raise forms.ValidationError("Passwords do not match.")
+            
+            try:
+                validate_password(new_password1)  # Use Django's password validation
+            except forms.ValidationError as e:
+                raise forms.ValidationError(" ".join(e.messages))
+
+        return cleaned_data

@@ -10,7 +10,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Sidebar -->
         <div class="sidebar">
             <div class="logo">
                 <img src="{% static 'images/ecblogo.png' %}" alt="Logo">
@@ -18,7 +17,7 @@
             </div>
             <nav class="menu">
                 <a href="{% url 'dashboard' %}">
-                    <i class="fas fa-home"></i> Dashboard
+                    <i class="fas fa-home"></i> Home
                 </a>
                 <a href="#">
                     <i class="fas fa-chart-bar"></i> Reports
@@ -27,7 +26,7 @@
                     <i class="fas fa-user-cog"></i> Manage User
                 </a>
                 <a href="#">
-                    <i class="fas fa-file-invoice-dollar"></i> Generate Bill
+                    <i class="fas fa-file-invoice-dollar"></i> View Bill
                 </a>
                 <a href="{% url 'profile' %}">
                     <i class="fas fa-user-circle"></i> Profile
@@ -70,7 +69,8 @@
 
                     <fieldset>
                         <legend>Change Password</legend>
-                        {{ password_form.as_p }}
+                        {{ password_form.new_password1.label_tag }} {{ password_form.new_password1 }}
+                        {{ password_form.new_password2.label_tag }} {{ password_form.new_password2 }}
                     </fieldset>
 
                     <button type="submit" class="btn">Update</button>

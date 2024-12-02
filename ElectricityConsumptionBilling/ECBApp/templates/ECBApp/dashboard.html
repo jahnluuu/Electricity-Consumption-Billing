@@ -1,127 +1,51 @@
 {% load static %}
+{% load custom_filters %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/charts.css' %}">
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <!-- Left Sidebar -->
+        <!-- Sidebar -->
         <div class="sidebar">
             <div class="logo">
                 <img src="{% static 'images/ecblogo.png' %}" alt="Logo">
                 <h2>Electricity Consumption<br>Bill</h2>
             </div>
             <nav class="menu">
-                <a href="#" class="active">
-                    <i class="fas fa-home"></i> Dashboard
+                <a href="{% url 'dashboard' %}">
+                    <i class="fas fa-home"></i> Home
                 </a>
-               
                 <a href="#">
                     <i class="fas fa-chart-bar"></i> Reports
                 </a>
                 <a href="#">
                     <i class="fas fa-user-cog"></i> Manage User
                 </a>
-                <a href="#">
-                    <i class="fas fa-file-invoice-dollar"></i> Generate Bill
+                <a href="{% url 'view_bill' %}">
+                    <i class="fas fa-file-invoice-dollar"></i> View Bill
                 </a>
                 <a href="{% url 'profile' %}">
                     <i class="fas fa-user-circle"></i> Profile
                 </a>
             </nav>
-            <a href="{% url 'logout' %}" class="logout-btn">
-                Logout
-                </a>
-            
+            <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
         </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Header -->
-            <div class="header">
-                <div class="breadcrumb">
-                    <p>Pages / Dashboard</p>
-                    <h1>Main Dashboard</h1>
-                    <p class="branch">Cebu Branch</p>
-                </div>
-                <div class="user-settings">
-                    <input type="text" placeholder="Search">
-                    <div class="toggle-theme">
-                        <i class="fas fa-sun"></i>
-                        <i class="fas fa-moon"></i>
-                    </div>
-                    <img src="{% static 'images/profile-pic.png' %}" alt="User">
-                </div>
-            </div>
-
-            <!-- Statistic Boxes -->
-
-                <div class="stat-box">
-                    <i class="fas fa-coins"></i>
-                    <h3>Total Payments</h3>
-                    {% if total_amount > 0 %}
-                        <p>₱<span id="total-payments">{{ total_amount }}</span></p>
-                    {% else %}
-                        <p>No payments available</p>
-                    {% endif %}
-                </div>
-                
-                <!-- graph Chart.js -->
-                
-                <!-- Include Chart.js -->
-                <div class="chart-container">
-                    <canvas id="paymentAnalysisChart"></canvas>
-                </div>
-            
-                <!-- Your other content goes here -->
-                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-                
-                <script>
-                    const paymentAnalysis = JSON.parse('{{ payment_analysis|escapejs }}');
-                    
-                    const ctx2 = document.getElementById('paymentAnalysisChart').getContext('2d');
-                    const paymentAnalysisChart = new Chart(ctx2, {
-                        type: 'pie',
-                        data: {
-                            labels: ['Payments Done', 'Payments Pending'],
-                            datasets: [{
-                                data: [paymentAnalysis.done, paymentAnalysis.pending],
-                                backgroundColor: ['#6574ff','#f3590b'],
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                legend: {
-                                    position: 'top',
-                                    labels: {
-                                        font: {
-                                            size: 14,
-                                            weight: '600'
-                                        },
-                                        padding: 20,
-                                    },
-                                },
-                                tooltip: {
-                                    callbacks: {
-                                        label: function(tooltipItem) {
-                                            let label = tooltipItem.label;
-                                            let value = tooltipItem.raw;
-                                            return `${label}: ₱${value.toLocaleString()}`;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    });
-                </script>
-                
+        <!-- Home Background -->
+        <div class="home-background">
+            <img src="{% static 'images/backgrounddd.png' %}" alt="Background">
+            <div class="overlay">
+                <h1>Electric Consumption Billing</h1>
+                <p>Effortless Electric Billing for Utilities: Simplify data management, automate billing, and provide customers with seamless access—all with the ECB System.</p>
             </div>
         </div>
     </div>
