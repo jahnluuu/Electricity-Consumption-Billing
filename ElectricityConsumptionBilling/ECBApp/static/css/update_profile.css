@@ -1,17 +1,13 @@
-/* Update Profile */
-/* Form Card */
-/* Form Card */
 .form-card {
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     padding: 40px;
     margin-top: 20px;
-    height: 80vh; /* Adjusted height to fit the content */
-    overflow-y: auto; /* Ensures the content scrolls if it's too long */
+    height: 80vh; 
+    overflow-y: auto; 
 }
 
-/* Form Card Header */
 .form-card h2 {
     font-size: 24px;
     font-weight: bold;
@@ -19,7 +15,6 @@
     color: #333;
 }
 
-/* Form Elements */
 form fieldset {
     border: none;
     margin-bottom: 20px;
@@ -57,7 +52,6 @@ form button:hover {
     background: linear-gradient(90deg, #eb082a, #f3590b);
 }
 
-/* Message Alerts */
 .messages {
     margin-top: 20px;
 }

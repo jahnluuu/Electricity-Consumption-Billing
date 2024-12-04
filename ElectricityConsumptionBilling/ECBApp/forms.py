@@ -33,12 +33,12 @@ class CustomerPasswordUpdateForm(forms.Form):
     new_password1 = forms.CharField(
         label="New Password",
         widget=forms.PasswordInput(attrs={'class': 'form-control'}),
-        required=False,  # Make this field optional
+        required=False,  
     )
     new_password2 = forms.CharField(
         label="Confirm New Password",
         widget=forms.PasswordInput(attrs={'class': 'form-control'}),
-        required=False,  # Make this field optional
+        required=False, 
     )
 
     def clean(self):
@@ -46,13 +46,12 @@ class CustomerPasswordUpdateForm(forms.Form):
         new_password1 = cleaned_data.get("new_password1")
         new_password2 = cleaned_data.get("new_password2")
 
-        # If no new passwords are provided, skip validation
         if new_password1 and new_password2:
             if new_password1 != new_password2:
                 raise forms.ValidationError("Passwords do not match.")
             
             try:
-                validate_password(new_password1)  # Use Django's password validation
+                validate_password(new_password1)  
             except forms.ValidationError as e:
                 raise forms.ValidationError(" ".join(e.messages))
 

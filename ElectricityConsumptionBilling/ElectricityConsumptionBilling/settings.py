@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,6 +40,24 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ECBApp',
 ]
+
+JAZZMIN_SETTINGS = {
+    "site_title": "ECB Admin",
+    "site_header": "ECB Admin Panel",
+    "site_brand": "ECB Admin",
+    "site_logo": "images/ecblogoadmin.png",  
+    "theme": "cosmo",
+    "dark_mode_theme": "darkly",
+    "welcome_sign": "Welcome to Electricity Consumption Billing Admin",
+    "copyright": "Electricity Consumption Billing",
+    "topmenu_links": [
+        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"model": "auth.User"},
+        {"app": "ECBApp"},
+    ],
+    "user_avatar": None,
+    
+}
 
 AUTH_USER_MODEL = 'ECBApp.Customer'
 

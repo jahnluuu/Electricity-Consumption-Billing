@@ -1,8 +1,7 @@
-/* Container for the chart, acting like a stat-box */
 .chart-container {
     width: 100%;
-    max-width: 400px; /* You can adjust the max-width to fit your design */
-    height: 300px; /* Adjust the height to your preference */
+    max-width: 400px; 
+    height: 300px; 
     padding: 15px;
     background-color: #ffffff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -10,7 +9,6 @@
     margin: 20px auto;
 }
 
-/* Title and Legend Styling */
 .chart-title {
     font-size: 18px;
     font-weight: bold;
@@ -43,7 +41,6 @@
     margin-right: 5px;
 }
 
-/* Ensuring the chart fits nicely within the container */
 #paymentAnalysisChart {
     width: 100%;
     height: 100%;

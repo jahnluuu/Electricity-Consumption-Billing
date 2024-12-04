@@ -109,12 +109,9 @@ def create_or_update_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Consumption)
 def create_or_update_bill(sender, instance, created, **kwargs):
     if created:
-        print(f"Creating a new bill for {instance.customer}")
-        tariff = Tariff.objects.latest('effectiveDate')  # Get the latest tariff
-        total_amount = instance.totalConsumption * tariff.ratePerKwh  # Calculate totalAmount
-        print(f"Total Amount calculated: {total_amount}")
+        tariff = Tariff.objects.latest('effectiveDate') 
+        total_amount = instance.totalConsumption * tariff.ratePerKwh
 
-        # Create a new Bill
         bill = Bill.objects.create(
             customer=instance.customer,
             billDate=instance.readingDateTo, 

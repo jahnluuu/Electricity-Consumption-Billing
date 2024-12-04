@@ -1,4 +1,3 @@
-/* General Styles */
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
@@ -12,7 +11,6 @@ body {
     width: 100%;
 }
 
-/* Sidebar */
 .sidebar {
     width: 250px;
     background-color: #ffffff;
@@ -33,15 +31,15 @@ body {
     margin-bottom: 0px;
     width: 150px;
     height: auto;
-    margin-bottom: -5px; /* Use negative margin to overlap the text closer to the image */
+    margin-bottom: -5px; 
 }
 
 .sidebar .logo h2 {
     font-size: 18px;
     color: #555;
     font-weight: bold;
-    line-height: 1; /* Tighten the text spacing */
-    margin-top: 0; /* Remove any default margin above the text */
+    line-height: 1; 
+    margin-top: 0; 
 }
 
 .sidebar .menu {
@@ -87,7 +85,6 @@ body {
     background: linear-gradient(90deg, #eb082a, #f3590b);
 }
 
-/* Main Content */
 .main-content {
     flex: 1;
     padding: 20px;
@@ -152,7 +149,7 @@ body {
     position: relative;
     width: 100%;
     min-height: 100vh;
-    height: auto;/* Adjust based on header height */
+    height: auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -171,7 +168,7 @@ body {
 .home-background .overlay {
     position: absolute;
     z-index: 1;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+    background-color: rgba(0, 0, 0, 0.5); 
     width: 100%;
     height: 100%;
     display: flex;
@@ -193,5 +190,3 @@ body {
     margin-bottom: 2rem;
 }
 
-/* Footer Styles */
-/* Footer Styles */
