@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from datetime import date, timedelta
+from django.db.models import Sum
 
 class Customer(AbstractUser):
     first_name = models.CharField(max_length=50)
@@ -52,18 +53,6 @@ class Consumption(models.Model):
     def save(self, *args, **kwargs):
         # Save the Consumption first
         super().save(*args, **kwargs)
-
-        # Create or update the Bill associated with the consumption
-        bill, created = Bill.objects.get_or_create(
-            customer=self.customer,
-            billDate=self.readingDateFrom,  # Use readingDateFrom for billDate
-            defaults={
-                'dueDate': self.readingDateTo + timedelta(days=30),  # Set default dueDate
-                'tariff': Tariff.objects.latest('effectiveDate'),  # Set the latest tariff
-                'totalAmount': 0  # Default totalAmount
-            }
-        )
-
        
 
     def __str__(self):
@@ -71,8 +60,8 @@ class Consumption(models.Model):
 
 class Bill(models.Model):
     STATUS_CHOICES = [
-        ('Paid', 'Paid'),
         ('Pending', 'Pending'),
+        ('Paid', 'Paid'),
         ('Overdue', 'Overdue'),
     ]
 
@@ -83,9 +72,13 @@ class Bill(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     tariff = models.ForeignKey(Tariff, on_delete=models.CASCADE)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
-
+    
+    def get_paid_amount(self):
+        total_paid = self.payment_set.aggregate(Sum('amountPaid'))['amountPaid__sum'] or 0
+        
+        return total_paid
+    
     def save(self, *args, **kwargs):
-        # Auto-update status
         if self.totalAmount == 0:
             self.status = 'Paid'
         elif self.dueDate < date.today():
@@ -94,7 +87,6 @@ class Bill(models.Model):
             self.status = 'Pending'
         super().save(*args, **kwargs)
     
-
 class BillingDetails(models.Model):
     consumption = models.ForeignKey(Consumption, on_delete=models.CASCADE)
     bill = models.ForeignKey(Bill, on_delete=models.CASCADE)
@@ -105,6 +97,7 @@ class Payment(models.Model):
     amountPaid = models.DecimalField(max_digits=10, decimal_places=2)
     paymentMethod = models.CharField(max_length=50)
     bill = models.ForeignKey(Bill, on_delete=models.CASCADE)
+    note = models.TextField(blank=True, null=True)
 
 @receiver(post_save, sender=Customer)
 def create_or_update_profile(sender, instance, created, **kwargs):
@@ -124,33 +117,31 @@ def create_or_update_bill(sender, instance, created, **kwargs):
         # Create a new Bill
         bill = Bill.objects.create(
             customer=instance.customer,
-            billDate=instance.readingDateTo,  # Bill date (e.g., last day of consumption period)
-            totalAmount=total_amount,  # Ensure totalAmount is set
-            dueDate=instance.readingDateTo + timedelta(days=30),  # Due date (30 days from bill date)
-            tariff=tariff  # Associate the Tariff with the Bill
+            billDate=instance.readingDateTo, 
+            totalAmount=total_amount, 
+            dueDate=instance.readingDateTo + timedelta(days=30), 
+            tariff=tariff  
         )
         print(f"Created Bill with due date: {bill.dueDate}")
 
     else:
         print(f"Updating an existing bill for {instance.customer}")
         try:
-            # Look for the Bill associated with this Customer and reading period (readingDateTo)
             bill = Bill.objects.get(customer=instance.customer, billDate=instance.readingDateTo)
-            tariff = bill.tariff  # Use the Tariff directly from the existing Bill
-            total_amount = instance.totalConsumption * tariff.ratePerKwh  # Recalculate totalAmount
+            tariff = bill.tariff 
+            total_amount = instance.totalConsumption * tariff.ratePerKwh 
             print(f"Updated Total Amount: {total_amount}")
-            bill.totalAmount = total_amount  # Update the totalAmount
-            bill.save()  # Save the updated Bill
+            bill.totalAmount = total_amount
+            bill.save()  
         except Bill.DoesNotExist:
             print("No Bill found, creating a new one")
-            # If no Bill exists, create one (this should be handled by the signal normally)
-            tariff = Tariff.objects.latest('effectiveDate')  # Get the latest tariff or adjust as needed
+            tariff = Tariff.objects.latest('effectiveDate') 
             total_amount = instance.totalConsumption * tariff.ratePerKwh
             bill = Bill.objects.create(
                 customer=instance.customer,
                 billDate=instance.readingDateTo,
                 totalAmount=total_amount,
-                dueDate=instance.readingDateTo + timedelta(days=30),  # Ensure dueDate is set here
+                dueDate=instance.readingDateTo + timedelta(days=30), 
                 tariff=tariff
             )
             print(f"Created Bill with due date: {bill.dueDate}")
@@ -160,9 +151,9 @@ def update_bill_status_on_payment(sender, instance, **kwargs):
     bill = instance.bill
     total_paid = Payment.objects.filter(bill=bill).aggregate(total=Sum('amountPaid'))['total'] or 0
 
-    if total_paid >= bill.totalAmount:  # Check if the bill is fully paid
+    if total_paid >= bill.totalAmount:  
         bill.status = 'Paid'
-        bill.totalAmount = 0  # Optionally clear the total amount due
+        bill.totalAmount = 0 
     else:
         bill.status = 'Pending'
     
