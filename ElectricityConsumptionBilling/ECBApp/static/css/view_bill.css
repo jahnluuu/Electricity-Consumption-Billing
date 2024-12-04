@@ -198,7 +198,7 @@ table th,
 table td {
     padding: 12px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;  
 }
 
 .overdue {
@@ -225,6 +225,7 @@ table td {
     gap: 20px; /* Space between the table and chart */
     align-items: flex-start; /* Align items at the top */
     margin-top: 20px; /* Add space above the container */
+    
 }
 
 .table-chart-container table {

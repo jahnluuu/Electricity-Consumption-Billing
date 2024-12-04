@@ -1,6 +1,8 @@
+{% extends 'ECBApp/base.html' %}
 {% load static %}
 {% load custom_filters %}
 
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,156 +14,110 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+   
     <div class="container">
-        <!-- Left Sidebar -->
-        <div class="sidebar">
-            <div class="logo">
-                <img src="{% static 'images/ecblogo.png' %}" alt="Logo">
-                <h2>Electricity Consumption<br>Bill</h2>
+        <div class="dashboard-overview">
+            <!-- Statistic Boxes -->
+            <div class="stat-boxes">
+                <div class="stat-box">
+                    <i class="fas fa-coins"></i>
+                    <h3>Pending Payments</h3>
+                    <p>₱{{ total_due|floatformat:2 }}</p>
+                </div>
+                <div class="stat-box">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Total Paid</h3>
+                    <p>₱{{ total_paid }}</p>
+                </div>
+                <div class="stat-box">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Overdue Bills</h3>
+                    <p>{{ overdue_bills }}</p>
+                </div>
             </div>
-            <nav class="menu">
-                <a href="{% url 'dashboard' %}">
-                    <i class="fas fa-home"></i> Home
-                </a>
-                <a href="#">
-                    <i class="fas fa-chart-bar"></i> Reports
-                </a>
-                <a href="#">
-                    <i class="fas fa-user-cog"></i> Manage User
-                </a>
-                <a href="{% url 'view_bill' %}">
-                    <i class="fas fa-file-invoice-dollar"></i> View Bill
-                </a>
-                <a href="{% url 'profile' %}">
-                    <i class="fas fa-user-circle"></i> Profile
-                </a>
-            </nav>
-            <a href="{% url 'logout' %}" class="logout-btn">
-                Logout
-            </a>
         </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Header -->
-            <div class="header">
-                <div class="breadcrumb">
-                    <p>Pages / View Bill</p>
-                    <h1>View Bill</h1>
-                    <p class="branch">Cebu Branch</p>
-                </div>
-                <div class="user-settings">
-                    <input type="text" placeholder="Search">
-                    <div class="toggle-theme">
-                        <i class="fas fa-sun"></i>
-                        <i class="fas fa-moon"></i>
-                    </div>
-                    <img src="{% static 'images/profile-pic.png' %}" alt="User">
-                </div>
+        <!-- Table and Chart Container -->
+        <div class="table-chart-container">
+            <!-- Table -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>Bill Date</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bill in bills %}
+                    <tr class="{% if bill.status == 'Overdue' %}overdue{% endif %}">
+                        <td>{{ bill.billDate }}</td>
+                        <td>₱{{ bill.totalAmount }}</td>
+                        <td>{{ bill.status }}</td>
+                        <td>
+                            {% if bill.status == 'Pending' %}
+                            <a href="{% url 'initiate_payment' bill.billID %}" class="btn">Pay Now</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">No bills available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Payment Analysis Chart -->
+            <div class="chart-container">
+                <canvas id="paymentAnalysisChart"></canvas>
             </div>
+        </div>
+    </div>
 
-            <!-- Dashboard Overview -->
-            <div class="dashboard-overview">
-                <!-- Statistic Boxes -->
-                <div class="stat-boxes">
-                    <div class="stat-box">
-                        <i class="fas fa-coins"></i>
-                        <h3>Pending Payments</h3>
-                        <p>₱{{ total_due|floatformat:2 }}</p>
-                    </div>
-                    <div class="stat-box">
-                        <i class="fas fa-check-circle"></i>
-                        <h3>Total Paid</h3>
-                        <p>₱{{ total_paid }}</p>
-                    </div>
-                    <div class="stat-box">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h3>Overdue Bills</h3>
-                        <p>{{ overdue_bills }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Table and Chart Container -->
-            <div class="table-chart-container">
-                <!-- Table -->
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Bill Date</th>
-                            <th>Total Amount</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for bill in bills %}
-                        <tr class="{% if bill.status == 'Overdue' %}overdue{% endif %}">
-                            <td>{{ bill.billDate }}</td>
-                            <td>₱{{ bill.totalAmount }}</td>
-                            <td>{{ bill.status }}</td>
-                            <td>
-                                {% if bill.status == 'Pending' %}
-                                <a href="{% url 'initiate_payment' bill.billID %}" class="btn">Pay Now</a>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="4">No bills available.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-
-                <!-- Payment Analysis Chart -->
-                <div class="chart-container">
-                    <canvas id="paymentAnalysisChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Include Chart.js -->
-            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-            <script>
-                const paymentAnalysis = JSON.parse('{{ payment_analysis|escapejs }}');
-                
-                const ctx2 = document.getElementById('paymentAnalysisChart').getContext('2d');
-                const paymentAnalysisChart = new Chart(ctx2, {
-                    type: 'pie',
-                    data: {
-                        labels: ['Payments Done', 'Payments Pending'],
-                        datasets: [{
-                            data: [paymentAnalysis.done, paymentAnalysis.pending],
-                            backgroundColor: ['#6574ff', '#f3590b'],
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                                labels: {
-                                    font: {
-                                        size: 14,
-                                        weight: '600'
-                                    },
-                                    padding: 20,
-                                },
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const paymentAnalysis = JSON.parse('{{ payment_analysis|escapejs }}');
+        
+        const ctx2 = document.getElementById('paymentAnalysisChart').getContext('2d');
+        const paymentAnalysisChart = new Chart(ctx2, {
+            type: 'pie',
+            data: {
+                labels: ['Payments Done', 'Payments Pending'],
+                datasets: [{
+                    data: [paymentAnalysis.done, paymentAnalysis.pending],
+                    backgroundColor: ['#6574ff', '#f3590b'],
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 14,
+                                weight: '600'
                             },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(tooltipItem) {
-                                        let label = tooltipItem.label;
-                                        let value = tooltipItem.raw;
-                                        return `${label}: ₱${value.toLocaleString()}`;
-                                    }
-                                }
+                            padding: 20,
+                        },
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                let label = tooltipItem.label;
+                                let value = tooltipItem.raw;
+                                return `${label}: ₱${value.toLocaleString()}`;
                             }
                         }
                     }
-                });
-            </script>
-        </div>
-    </div>
+                }
+            }
+        });
+    </script>
+   
 </body>
 </html>
+{% endblock %}

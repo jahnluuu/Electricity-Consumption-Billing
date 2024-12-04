@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{% static 'css/charts.css' %}">
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
 </head>
 <body>
     <div class="container">
@@ -39,7 +40,25 @@
             </nav>
             <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
         </div>
-
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="breadcrumb">
+                    <p>Home / View Bill</p>
+                    <h1>View Bill</h1>
+                    <p class="branch">Cebu Branch</p>
+                </div>
+                <div class="user-settings">
+                    <input type="text" alt = "search-bar input" placeholder="Search">
+                    <div class="toggle-theme">
+                        <button id="theme-toggle">
+                            <i class="fas fa-sun"></i>
+                            <i class="fas fa-moon" style="display: none;"></i>
+                        </button>
+                    </div>
+                    <img src="{% static 'images/profile-pic.png' %}" alt="User">
+                </div>
+            </div>
         <!-- Home Background -->
         <div class="home-background">
             <img src="{% static 'images/backgrounddd.png' %}" alt="Background">
@@ -49,5 +68,7 @@
             </div>
         </div>
     </div>
+    <script src="{% static 'js/script.js' %}"></script>
+
 </body>
 </html>

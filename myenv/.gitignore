@@ -1,5 +1,0 @@
-myenv/
-*.pyc
-*.pyo
-__pycache__/
-db.sqlite3
