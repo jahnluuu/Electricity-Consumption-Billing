@@ -13,7 +13,8 @@ body, html {
 /* Main Container */
 .login-container {
     display: flex;
-    height: 100vh;
+    min-height: 100vh;
+    height: auto;
 }
 
 /* Left Side: Form */
