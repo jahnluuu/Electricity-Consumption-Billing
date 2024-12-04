@@ -24,7 +24,7 @@
                 <a href="#">
                     <i class="fas fa-chart-bar"></i> Reports
                 </a>
-                <a href="#">
+                <a href="{% url 'manageprofile' %}">
                     <i class="fas fa-user-cog"></i> Manage User
                 </a>
                 <a href="{% url 'view_bill' %}">
@@ -76,8 +76,8 @@
                         <p><strong>Address:</strong> {{ request.user.address }}</p>
         
                         <div class="actions">
-                            <a href="{% url 'update_profile' %}" class="btn">Update Profile</a>
-                            <a href="{% url 'dashboard' %}" class="btn secondary">Back to Dashboard</a>
+                            <a href="{% url 'manageprofile' %}" class="btn">Update Profile</a>
+                            <a href="{% url 'dashboard' %}" class="btn secondary">Back to Home</a>
                         </div>
                     </div>
                 </div>

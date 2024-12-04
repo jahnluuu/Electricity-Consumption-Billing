@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Profile</title>
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <img src="{% static 'images/ecblogo.png' %}" alt="Logo">
+                <h2>Electricity Consumption<br>Bill</h2>
+            </div>
+            <nav class="menu">
+                <a href="{% url 'dashboard' %}">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="#">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </a>
+                <a href="{% url 'manageprofile' %}">
+                    <i class="fas fa-user-cog"></i> Manage User
+                </a>
+                <a href="{% url 'view_bill' %}">
+                    <i class="fas fa-file-invoice-dollar"></i> View Bill
+                </a>
+                <a href="{% url 'profile' %}">
+                    <i class="fas fa-user-circle"></i> Profile
+                </a>
+            </nav>
+            <a href="{% url 'logout' %}" class="logout-btn">
+                Logout
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="breadcrumb">
+                    <p>Pages / Manage Profile</p>
+                    <h1>Manage User Profile</h1>
+                </div>
+                <div class="user-settings">
+                    <input type="text" placeholder="Search">
+                    <div class="toggle-theme">
+                        <i class="fas fa-sun"></i>
+                        <i class="fas fa-moon"></i>
+                    </div>
+                    <img src="{% static 'images/profile-pic.png' %}" alt="User">
+                </div>
+            </div>
+
+            <!-- Profile Management Form -->
+            <div class="profile-card">
+                <div class="profile-header">
+                    <h2>Edit Profile</h2>
+                </div>
+                <div class="profile-content">
+                    <form method="POST" action="{% url 'save_profile' %}">
+                        {% csrf_token %}
+                        <div class="profile-image">
+                            <img src="{% static 'images/profile-pic.png' %}" alt="User Image">
+                        </div>
+                        <div class="profile-info">
+                            <h2>Profile Information</h2>
+                            <label for="username"><strong>Username:</strong></label>
+                            <input type="text" id="username" name="username" value="{{ request.user.username }}" required>
+
+                            <label for="first_name"><strong>First Name:</strong></label>
+                            <input type="text" id="first_name" name="first_name" value="{{ request.user.first_name }}" required>
+
+                            <label for="last_name"><strong>Last Name:</strong></label>
+                            <input type="text" id="last_name" name="last_name" value="{{ request.user.last_name }}" required>
+
+                            <label for="email"><strong>Email:</strong></label>
+                            <input type="email" id="email" name="email" value="{{ request.user.email }}" required>
+
+                            <label for="phone_number"><strong>Phone Number:</strong></label>
+                            <input type="text" id="phone_number" name="phone_number" value="{{ request.user.phone_number }}">
+
+                            <label for="address"><strong>Address:</strong></label>
+                            <textarea id="address" name="address" rows="3">{{ request.user.address }}</textarea>
+
+                            <div class="actions">
+                                <button type="submit" class="btn">Save Changes</button>
+                                <a href="{% url 'profile' %}" class="btn secondary">Cancel</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
