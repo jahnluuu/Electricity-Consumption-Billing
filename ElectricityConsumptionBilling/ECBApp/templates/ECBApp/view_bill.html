@@ -2,6 +2,17 @@
 {% load static %}
 {% load custom_filters %}
 
+{% block breadcrumb %}
+    {% for crumb in breadcrumb %}
+        <a href="{{ crumb.url }}">{{ crumb.name }}</a>
+        {% if not forloop.last %} / {% endif %}
+    {% endfor %}
+{% endblock %}
+
+{% block header_title %}
+    View Bill
+{% endblock %}
+
 {% block content %}
 <!DOCTYPE html>
 <html lang="en">
@@ -78,14 +89,25 @@
 
     <!-- Include Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         const paymentAnalysis = JSON.parse('{{ payment_analysis|escapejs }}');
         
+        // Detect current theme
+        const currentTheme = document.body.getAttribute('data-theme');
+    
+        // Set chart background and text colors based on the current theme
+        const chartBackgroundColor = currentTheme === 'dark' ? '#444' : '#fff';
+        const chartTextColor = currentTheme === 'dark' ? '#fff' : '#000';
+        const chartTooltipBackgroundColor = currentTheme === 'dark' ? '#555' : '#fff';
+        const chartTooltipTextColor = currentTheme === 'dark' ? '#fff' : '#000';
+    
         const ctx2 = document.getElementById('paymentAnalysisChart').getContext('2d');
+        
         const paymentAnalysisChart = new Chart(ctx2, {
             type: 'pie',
             data: {
-                labels: ['Payments Done', 'Payments Pending'],
+                labels: ['Payments Done', 'Payments Pending'], 
                 datasets: [{
                     data: [paymentAnalysis.done, paymentAnalysis.pending],
                     backgroundColor: ['#6574ff', '#f3590b'],
@@ -99,12 +121,16 @@
                         labels: {
                             font: {
                                 size: 14,
-                                weight: '600'
+                                weight: '600',
+                                color: chartTextColor, // Set text color based on theme
                             },
                             padding: 20,
                         },
                     },
                     tooltip: {
+                        backgroundColor: chartTooltipBackgroundColor, // Set tooltip background color
+                        titleColor: chartTextColor, // Set tooltip title color
+                        bodyColor: chartTooltipTextColor, // Set tooltip body color
                         callbacks: {
                             label: function(tooltipItem) {
                                 let label = tooltipItem.label;
@@ -113,10 +139,18 @@
                             }
                         }
                     }
+                },
+                plugins: {
+                    tooltip: {
+                        backgroundColor: chartTooltipBackgroundColor, // Tooltip background
+                        titleColor: chartTextColor, // Tooltip title color
+                        bodyColor: chartTooltipTextColor, // Tooltip body color
+                    }
                 }
             }
         });
     </script>
+    
    
 </body>
 </html>

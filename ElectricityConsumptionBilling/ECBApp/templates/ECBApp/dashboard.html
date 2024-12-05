@@ -1,6 +1,19 @@
+{% extends 'ECBApp/base.html' %}
 {% load static %}
 {% load custom_filters %}
 
+
+{% block breadcrumb %}
+    {% for crumb in breadcrumb %}
+        <a href="{{ crumb.url }}">{{ crumb.name }}</a>
+        {% if not forloop.last %} / {% endif %}
+    {% endfor %}
+{% endblock %}
+
+{% block header_title %}
+    Dashboard
+{% endblock %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,51 +27,7 @@
     
 </head>
 <body>
-    <div class="container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="logo">
-                <img src="{% static 'images/ecblogo.png' %}" alt="Logo">
-                <h2>Electricity Consumption<br>Bill</h2>
-            </div>
-            <nav class="menu">
-                <a href="{% url 'dashboard' %}">
-                    <i class="fas fa-home"></i> Home
-                </a>
-                <a href="#">
-                    <i class="fas fa-chart-bar"></i> Reports
-                </a>
-                <a href="#">
-                    <i class="fas fa-user-cog"></i> Manage User
-                </a>
-                <a href="{% url 'view_bill' %}">
-                    <i class="fas fa-file-invoice-dollar"></i> View Bill
-                </a>
-                <a href="{% url 'profile' %}">
-                    <i class="fas fa-user-circle"></i> Profile
-                </a>
-            </nav>
-            <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
-        </div>
-        <div class="main-content">
-            <!-- Header -->
-            <div class="header">
-                <div class="breadcrumb">
-                    <p>Home / View Bill</p>
-                    <h1>View Bill</h1>
-                    <p class="branch">Cebu Branch</p>
-                </div>
-                <div class="user-settings">
-                    <input type="text" alt = "search-bar input" placeholder="Search">
-                    <div class="toggle-theme">
-                        <button id="theme-toggle">
-                            <i class="fas fa-sun"></i>
-                            <i class="fas fa-moon" style="display: none;"></i>
-                        </button>
-                    </div>
-                    <img src="{% static 'images/profile-pic.png' %}" alt="User">
-                </div>
-            </div>
+    <div class="container"> 
         <!-- Home Background -->
         <div class="home-background">
             <img src="{% static 'images/backgrounddd.png' %}" alt="Background">
@@ -68,7 +37,7 @@
             </div>
         </div>
     </div>
-    <script src="{% static 'js/script.js' %}"></script>
 
 </body>
 </html>
+{% endblock %}
