@@ -50,6 +50,7 @@ JAZZMIN_SETTINGS = {
     "dark_mode_theme": "darkly",
     "welcome_sign": "Welcome to Electricity Consumption Billing Admin",
     "copyright": "Electricity Consumption Billing",
+    "login_background_image": "static/images/backgrounddd.png",
     "topmenu_links": [
         {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
         {"model": "auth.User"},
