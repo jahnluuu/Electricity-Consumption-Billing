@@ -1,4 +1,18 @@
+{% extends 'ECBApp/base.html' %}
 {% load static %}
+{% load custom_filters %}
+
+{% block breadcrumb %}
+    {% for crumb in breadcrumb %}
+        <a href="{{ crumb.url }}">{{ crumb.name }}</a>
+        {% if not forloop.last %} / {% endif %}
+    {% endfor %}
+{% endblock %}
+
+{% block header_title %}
+    Profile
+{% endblock %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,53 +24,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="logo">
-                <img src="{% static 'images/ecblogo.png' %}" alt="Logo">
-                <h2>Electricity Consumption<br>Bill</h2>
-            </div>
-            <nav class="menu">
-                <a href="{% url 'dashboard' %}">
-                    <i class="fas fa-home"></i> Home
-                </a>
-               
-                <a href="#">
-                    <i class="fas fa-chart-bar"></i> Reports
-                </a>
-                <a href="#">
-                    <i class="fas fa-user-cog"></i> Manage User
-                </a>
-                <a href="{% url 'view_bill' %}">
-                    <i class="fas fa-file-invoice-dollar"></i> View Bill
-                </a>
-                <a href="{% url 'profile' %}">
-                    <i class="fas fa-user-circle"></i> Profile
-                </a>
-            </nav>
-            <a href="{% url 'logout' %}" class="logout-btn">
-                Logout
-            </a>
-        </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Header -->
-            <div class="header">
-                <div class="breadcrumb">
-                    <p>Pages / Profile</p>
-                    <h1>User Profile</h1>
-                </div>
-                <div class="user-settings">
-                    <input type="text" placeholder="Search">
-                    <div class="toggle-theme">
-                        <i class="fas fa-sun"></i>
-                        <i class="fas fa-moon"></i>
-                    </div>
-                    <img src="{% static 'images/profile-pic.png' %}" alt="User">
-                </div>
-            </div>
-
             <!-- Profile Details -->
             <div class="profile-card">
                 <div class="profile-header">
@@ -85,3 +52,4 @@
     </div>
 </body>
 </html>
+{% endblock %}

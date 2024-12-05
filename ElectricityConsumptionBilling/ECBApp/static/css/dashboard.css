@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
@@ -116,6 +117,8 @@ body {
     color: #f44336;
     font-weight: bold;
 }
+=======
+>>>>>>> origin/pepitopat3
 
 .user-settings {
     display: flex;
@@ -157,12 +160,13 @@ body {
 }
 
 .home-background img {
-    position: absolute;
+    position: fill;
     width: 100%;
     min-height: 100vh;
     height: auto;
     object-fit: cover;
     z-index: 0;
+    
 }
 
 .home-background .overlay {

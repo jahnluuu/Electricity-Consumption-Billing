@@ -11,6 +11,9 @@ from decimal import Decimal
 from datetime import date
 import json
 import stripe
+from django.urls import reverse
+from django.shortcuts import render
+from django.contrib.auth import update_session_auth_hash
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 def register(request):
@@ -43,26 +46,49 @@ def logout_view(request):
 
 @login_required
 def dashboard(request):
+    breadcrumb = [
+        {'name': 'Home', 'url': reverse('dashboard')},  # Use reverse() to generate the URL for the dashboard
+     
+    ]
 
-    return render(request, 'ECBApp/dashboard.html')
+    return render(request, 'ECBApp/dashboard.html', {
+        'breadcrumb': breadcrumb,
+    })
 
 @login_required
 def profile(request):
     customer = request.user
     profile, created = Profile.objects.get_or_create(user=customer)
-    return render(request, 'ECBApp/profile.html', {'customer': customer, 'profile': profile})
+    
+    # Breadcrumb setup
+    breadcrumb = [
+        {'name': 'Home', 'url': reverse('dashboard')},
+        {'name': 'Profile', 'url': reverse('profile')}
+    ]
+
+    return render(request, 'ECBApp/profile.html', {
+        'customer': customer,
+        'profile': profile,
+        'breadcrumb': breadcrumb,  # Add breadcrumb to context
+    })
 
 @login_required
 def update_profile(request):
     customer = request.user
     profile, created = Profile.objects.get_or_create(user=customer)
 
+    breadcrumb = [
+        {'name': 'Home', 'url': reverse('dashboard')},
+        {'name': 'Profile', 'url': reverse('profile')},
+        {'name': 'Update Profile', 'url': reverse('update_profile')}
+    ]
+
     if request.method == 'POST':
         profile_form = ProfileForm(request.POST, instance=customer)
-        password_form = CustomerPasswordUpdateForm(request.POST)  
+        password_form = CustomerPasswordUpdateForm(request.POST)
 
         if profile_form.is_valid():
-            profile_form.save()  
+            profile_form.save()
 
             new_password1 = request.POST.get('new_password1')
             new_password2 = request.POST.get('new_password2')
@@ -71,7 +97,7 @@ def update_profile(request):
                 if password_form.is_valid():
                     customer.set_password(password_form.cleaned_data['new_password1'])
                     customer.save()
-                    update_session_auth_hash(request, customer) 
+                    update_session_auth_hash(request, customer)
                     messages.success(request, "Profile and password updated successfully.")
                 else:
                     messages.error(request, "Password update failed. Please check the fields.")
@@ -83,17 +109,17 @@ def update_profile(request):
             messages.error(request, "Please correct the errors below.")
     else:
         profile_form = ProfileForm(instance=customer)
-        password_form = CustomerPasswordUpdateForm() 
+        password_form = CustomerPasswordUpdateForm()
 
     return render(
         request,
         'ECBApp/update_profile.html',
         {
             'profile_form': profile_form,
-            'password_form': password_form
+            'password_form': password_form,
+            'breadcrumb': breadcrumb,  # Add breadcrumb to the context
         }
     )
-
 # @login_required
 # def payment_history(request):
 #     payments = Payment.objects.filter(bill__customer=request.user)
@@ -176,6 +202,7 @@ def payment_failed(request):
     
 @login_required
 def view_bill(request):
+    
     bills = Bill.objects.filter(customer=request.user)
     payments = Payment.objects.filter(bill__customer=request.user)
 
@@ -196,6 +223,10 @@ def view_bill(request):
         'done': float(total_paid),  
         'pending': float(total_pending),
     }
+    breadcrumb = [
+    {'name': 'Home', 'url': reverse('dashboard')},  # Use reverse() to generate the URL for the dashboard
+    {'name': 'View Bill', 'url': '/view-bill/'}
+    ]
 
     return render(request, 'ECBApp/view_bill.html', {
         'bills': bills,
@@ -205,4 +236,5 @@ def view_bill(request):
         'payment_analysis': json.dumps(payment_analysis),
         'months': months,
         'payment_totals': payment_totals,
+        'breadcrumb': breadcrumb,
     })
