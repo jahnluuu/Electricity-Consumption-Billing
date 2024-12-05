@@ -11,8 +11,6 @@ body {
     display: flex;
     width: 100%;
 }
-
-/* Sidebar */
 .sidebar {
     width: 250px;
     background-color: #ffffff;
