@@ -48,7 +48,6 @@ def logout_view(request):
 def dashboard(request):
     breadcrumb = [
         {'name': 'Home', 'url': reverse('dashboard')},  # Use reverse() to generate the URL for the dashboard
-     
     ]
 
     return render(request, 'ECBApp/dashboard.html', {
@@ -224,7 +223,7 @@ def view_bill(request):
         'pending': float(total_pending),
     }
     breadcrumb = [
-    {'name': 'Home', 'url': reverse('dashboard')},  # Use reverse() to generate the URL for the dashboard
+    {'name': 'Home', 'url': reverse('dashboard')}, 
     {'name': 'View Bill', 'url': '/view-bill/'}
     ]
 
