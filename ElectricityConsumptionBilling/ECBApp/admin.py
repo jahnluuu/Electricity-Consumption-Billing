@@ -19,11 +19,17 @@ class PaymentAdmin(admin.ModelAdmin):
     fields = ('bill', 'amountPaid', 'paymentDate', 'paymentMethod')
     ordering = ['-paymentDate']
 
+class BillingDetailsAdmin(admin.ModelAdmin):
+    list_display = ['bill', 'billID', 'totalAmount', 'dueDate', 'status', 'readingDateFrom', 'readingDateTo', 'totalConsumption']
+
+    def billID(self, obj):
+        return obj.bill.billID 
+
 admin.site.register(Customer)
 admin.site.register(Profile)
 admin.site.register(Tariff)
 admin.site.register(Consumption, ConsumptionAdmin)
 admin.site.register(Bill, BillAdmin)
-admin.site.register(BillingDetails)
+admin.site.register(BillingDetails, BillingDetailsAdmin)
 admin.site.register(Payment, PaymentAdmin)
 

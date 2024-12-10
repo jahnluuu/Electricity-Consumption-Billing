@@ -88,15 +88,22 @@ body {
 
 /* Main Content */
 .main-content {
-    flex: 1;
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    padding: 10px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .header .breadcrumb {
@@ -122,7 +129,7 @@ body {
 .user-settings {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 15px;
 }
 
 .user-settings input {
@@ -238,6 +245,25 @@ body[data-theme="dark"] .search-bar input:focus {
     font-size: 24px;
     color: inherit;
 }
+
+/* Dark Theme Header */
+body[data-theme="dark"] .header {
+    background-color: #444; /* Dark background for the header */
+    border-bottom: 1px solid #555; /* Adjust border color for better contrast */
+}
+
+body[data-theme="dark"] .header .breadcrumb p,
+body[data-theme="dark"] .header .breadcrumb h1,
+body[data-theme="dark"] .header .breadcrumb .branch {
+    color: #fff; /* Adjust text color for dark mode */
+}
+
+body[data-theme="dark"] .user-settings input {
+    background-color: #555; /* Dark input background */
+    color: #fff; /* Light text for input field */
+    border: 1px solid #777; /* Subtle border for input */
+}
+
 /* Dark Theme Sidebar */
 body[data-theme="dark"] .sidebar {
     background-color: #1e1e1e; /* Darker sidebar background */

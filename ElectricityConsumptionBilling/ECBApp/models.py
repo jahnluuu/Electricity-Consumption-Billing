@@ -2,8 +2,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from django.db.models import Sum
+import datetime
 
 class Customer(AbstractUser):
     first_name = models.CharField(max_length=50)
@@ -90,6 +91,17 @@ class Bill(models.Model):
 class BillingDetails(models.Model):
     consumption = models.ForeignKey(Consumption, on_delete=models.CASCADE)
     bill = models.ForeignKey(Bill, on_delete=models.CASCADE)
+    billDate = models.DateField(default=datetime.date.today)
+    totalAmount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    dueDate = models.DateField(default=date.today)
+    tariffRatePerKwh = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    status = models.CharField(max_length=10, choices=Bill.STATUS_CHOICES, default='Pending')
+    readingDateFrom = models.DateField(default=datetime.date.today)
+    readingDateTo = models.DateField(default=datetime.date.today)
+    totalConsumption = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+
+    def __str__(self):
+        return f"BillingDetails for {self.bill.customer.first_name} {self.bill.customer.last_name} - {self.billDate}"
 
 class Payment(models.Model):
     paymentID = models.AutoField(primary_key=True)
@@ -119,7 +131,22 @@ def create_or_update_bill(sender, instance, created, **kwargs):
             dueDate=instance.readingDateTo + timedelta(days=30), 
             tariff=tariff  
         )
+
+        BillingDetails.objects.create(
+            consumption=instance,
+            bill=bill,
+            billDate=bill.billDate,
+            totalAmount=bill.totalAmount,
+            dueDate=bill.dueDate,
+            tariffRatePerKwh=tariff.ratePerKwh,
+            status=bill.status,
+            readingDateFrom=instance.readingDateFrom,
+            readingDateTo=instance.readingDateTo,
+            totalConsumption=instance.totalConsumption
+        )
+
         print(f"Created Bill with due date: {bill.dueDate}")
+        print(f"Created BillingDetails for {bill.customer.first_name} {bill.customer.last_name}")
 
     else:
         print(f"Updating an existing bill for {instance.customer}")
@@ -130,6 +157,13 @@ def create_or_update_bill(sender, instance, created, **kwargs):
             print(f"Updated Total Amount: {total_amount}")
             bill.totalAmount = total_amount
             bill.save()  
+
+            billing_details = BillingDetails.objects.get(bill=bill)
+            billing_details.totalAmount = bill.totalAmount
+            billing_details.tariffRatePerKwh = tariff.ratePerKwh
+            billing_details.totalConsumption = instance.totalConsumption
+            billing_details.save()
+
         except Bill.DoesNotExist:
             print("No Bill found, creating a new one")
             tariff = Tariff.objects.latest('effectiveDate') 
@@ -140,6 +174,19 @@ def create_or_update_bill(sender, instance, created, **kwargs):
                 totalAmount=total_amount,
                 dueDate=instance.readingDateTo + timedelta(days=30), 
                 tariff=tariff
+            )
+
+            BillingDetails.objects.create(
+                consumption=instance,
+                bill=bill,
+                billDate=bill.billDate,
+                totalAmount=bill.totalAmount,
+                dueDate=bill.dueDate,
+                tariffRatePerKwh=tariff.ratePerKwh,
+                status=bill.status,
+                readingDateFrom=instance.readingDateFrom,
+                readingDateTo=instance.readingDateTo,
+                totalConsumption=instance.totalConsumption
             )
             print(f"Created Bill with due date: {bill.dueDate}")
 

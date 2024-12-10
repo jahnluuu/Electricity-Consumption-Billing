@@ -1,11 +1,23 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px; /* Max width to limit the form size */
+    margin: 0 auto; /* Center the container horizontally */
+    align-items: center;
+}
+
 .form-card {
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     padding: 40px;
     margin-top: 20px;
-    height: 80vh; 
-    overflow-y: auto; 
+    height: auto; /* Make the card's height flexible */
+    overflow-y: auto;
+    width: 100%;
+    max-width: 100%; /* Ensure it doesn't exceed the container width */
 }
 
 .form-card h2 {

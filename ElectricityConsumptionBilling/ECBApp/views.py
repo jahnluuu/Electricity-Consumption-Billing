@@ -237,3 +237,19 @@ def view_bill(request):
         'payment_totals': payment_totals,
         'breadcrumb': breadcrumb,
     })
+
+@login_required
+def view_billing_details(request):
+    # Get the bills and associated billing details for the logged-in customer
+    bills = Bill.objects.filter(customer=request.user)
+    billing_details = BillingDetails.objects.filter(bill__in=bills)
+
+    breadcrumb = [
+    {'name': 'Home', 'url': reverse('dashboard')}, 
+    {'name': 'View Bill Details', 'url': '/view-billing-details/'}
+    ]
+
+    return render(request, 'ECBApp/view_billing_details.html', {
+        'billing_details': billing_details,
+        'breadcrumb': breadcrumb,
+    })

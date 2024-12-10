@@ -1,6 +1,6 @@
 {% extends 'ECBApp/base.html' %}
 {% load static %}
-
+{% load custom_filters %}
 
 {% block breadcrumb %}
     {% for crumb in breadcrumb %}
@@ -19,12 +19,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Profile</title>
-    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/update_profile.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="container">
-            <!-- Update Profile Form -->
             <div class="form-card">
                 <h2>Update Your Profile</h2>
                 <form method="post">

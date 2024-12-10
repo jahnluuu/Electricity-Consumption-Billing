@@ -1,0 +1,60 @@
+{% extends 'ECBApp/base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block breadcrumb %}
+    {% for crumb in breadcrumb %}
+        <a href="{{ crumb.url }}" class="breadcrumb-item">{{ crumb.name }}</a>
+        {% if not forloop.last %} / {% endif %}
+    {% endfor %}
+{% endblock %}
+
+{% block header_title %}
+    Billing Details
+{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Details</title>
+    <link rel="stylesheet" href="{% static 'css/view_billing_details.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2 class="page-title">Billing Details</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Bill ID</th>
+                        <th>Bill Date</th>
+                        <th>Due Date</th>
+                        <th>Reading Dates</th>
+                        <th>Total Consumption</th>
+                        <th>Tariff Rate (kWh)</th>
+                        <th>Total Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for detail in billing_details %}
+                    <tr>
+                        <td>{{ detail.bill.billID }}</td>
+                        <td>{{ detail.billDate }}</td>
+                        <td>{{ detail.dueDate }}</td>
+                        <td>{{ detail.readingDateFrom }} to {{ detail.readingDateTo }}</td>
+                        <td>{{ detail.totalConsumption }}</td>
+                        <td>{{ detail.tariffRatePerKwh }}</td>
+                        <td>₱{{ detail.totalAmount }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}

@@ -12,7 +12,6 @@
 {% block header_title %}
     View Bill
 {% endblock %}
-
 {% block content %}
 <!DOCTYPE html>
 <html lang="en">
@@ -27,64 +26,66 @@
 <body>
    
     <div class="container">
-        <div class="dashboard-overview">
-            <!-- Statistic Boxes -->
-            <div class="stat-boxes">
-                <div class="stat-box">
-                    <i class="fas fa-coins"></i>
-                    <h3>Pending Payments</h3>
-                    <p>₱{{ total_due|floatformat:2 }}</p>
-                </div>
-                <div class="stat-box">
-                    <i class="fas fa-check-circle"></i>
-                    <h3>Total Paid</h3>
-                    <p>₱{{ total_paid }}</p>
-                </div>
-                <div class="stat-box">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <h3>Overdue Bills</h3>
-                    <p>{{ overdue_bills }}</p>
-                </div>
+        <div class="stat-boxes">
+            <div class="stat-box">
+                <i class="fas fa-coins"></i>
+                <h3>Pending Payments</h3>
+                <p>₱{{ total_due|floatformat:2 }}</p>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-check-circle"></i>
+                <h3>Total Paid</h3>
+                <p>₱{{ total_paid|floatformat:2 }}</p>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Overdue Bills</h3>
+                <p>{{ overdue_bills }}</p>
             </div>
         </div>
 
-        <!-- Table and Chart Container -->
-        <div class="table-chart-container">
-            <!-- Table -->
-            <table>
-                <thead>
-                    <tr>
-                        <th>Bill Date</th>
-                        <th>Total Amount</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for bill in bills %}
-                    <tr class="{% if bill.status == 'Overdue' %}overdue{% endif %}">
-                        <td>{{ bill.billDate }}</td>
-                        <td>₱{{ bill.totalAmount }}</td>
-                        <td>{{ bill.status }}</td>
-                        <td>
-                            {% if bill.status == 'Pending' %}
-                            <a href="{% url 'initiate_payment' bill.billID %}" class="btn">Pay Now</a>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4">No bills available.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="main-content">
+            <!-- Table and Chart Container -->
+            <div class="table-chart-container">
+                <!-- Table -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Bill ID</th>
+                            <th>Bill Date</th>
+                            <th>Total Amount</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bill in bills %}
+                        <tr class="{% if bill.status == 'Overdue' %}overdue{% endif %}">
+                            <td>{{ bill.billID}}</td>
+                            <td>{{ bill.billDate }}</td>
+                            <td>₱{{ bill.totalAmount }}</td>
+                            <td>{{ bill.status }}</td>
+                            <td>
+                                {% if bill.status == 'Pending' %}
+                                <a href="{% url 'initiate_payment' bill.billID %}" class="btn">Pay Now</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4">No bills available.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
 
             <!-- Payment Analysis Chart -->
             <div class="chart-container">
                 <canvas id="paymentAnalysisChart"></canvas>
             </div>
         </div>
+        </div>
+        
     </div>
 
     <!-- Include Chart.js -->
