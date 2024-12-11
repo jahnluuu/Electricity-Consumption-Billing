@@ -1,69 +1,122 @@
+/* Global theme colors */
+:root {
+    --light-bg: #fff;
+    --dark-bg: #121212;
+    --light-text: #333;
+    --dark-text: #fff;
+    --primary-color: #007bff;
+    --hover-color: #f1f1f1;
+    --light-shadow: rgba(0, 0, 0, 0.1);
+    --dark-shadow: rgba(255, 255, 255, 0.1);
+    --highlight-bg: #e6f7ff; /* Light blue for highlighted sections */
+}
+
+/* Default theme is light */
+body {
+    background-color: var(--light-bg);
+    color: var(--light-text);
+    font-family: 'Arial', sans-serif;
+}
+
+/* Dark theme adjustments */
+body[data-theme="dark"] {
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
+}
+
+/* Container */
 .container {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 20px;
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 25px;
 }
 
+/* Page Title */
 .page-title {
-    font-size: 28px;
-    color: #333;
-    font-weight: 600;
+    font-size: 32px;
+    font-weight: 700;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    color: var(--light-text);
 }
 
+/* Page Title in Dark Theme */
+body[data-theme="dark"] .page-title {
+    color: var(--dark-text);
+}
+
+body[data-theme="dark"] .container{
+    background-color: var(--dark-bg);
+}
+
+/* Breadcrumbs */
 .breadcrumb-item {
-    color: #007bff;
+    color: var(--primary-color);
     text-decoration: none;
     font-size: 16px;
+    font-weight: 600;
 }
 
 .breadcrumb-item:hover {
     text-decoration: underline;
 }
 
+/* History section */
 .history-section {
     margin-bottom: 40px;
+    padding: 20px;
+    background-color: var(--highlight-bg);
+    border-radius: 10px;
 }
 
 .history-section h3 {
-    font-size: 20px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 15px;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--light-text);
 }
 
+/* Table Styles */
 .table-container {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    background: #fff;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background: var(--light-bg);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 12px var(--light-shadow);
+    transition: box-shadow 0.3s ease;
+    border: 1px solid #ddd;
+}
+
+.table-container[data-theme="dark"] {
+    background: var(--dark-bg);
+    box-shadow: 0 4px 12px var(--dark-shadow);
+    border: 1px solid #333;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
+    margin-bottom: 20px;
 }
 
-table th,
-table td {
-    padding: 15px;
+table th, table td {
+    padding: 18px 25px;
     text-align: left;
     font-size: 16px;
     border-bottom: 1px solid #ddd;
+    transition: background-color 0.3s ease;
 }
 
 table th {
     background-color: #f4f4f4;
-    font-weight: bold;
-    color: #333;
+    font-weight: 600;
+    color: var(--light-text);
 }
 
 table tbody tr:nth-child(even) {
@@ -71,64 +124,205 @@ table tbody tr:nth-child(even) {
 }
 
 table tbody tr:hover {
-    background-color: #f1f1f1;
+    background-color: var(--hover-color);
 }
 
 table td {
-    color: #555;
+    color: var(--light-text);
 }
 
+table[data-theme="dark"] th {
+    background-color: #333;
+    color: var(--dark-text);
+}
+
+table[data-theme="dark"] tbody tr:nth-child(even) {
+    background-color: #444;
+}
+
+table[data-theme="dark"] tbody tr:hover {
+    background-color: #555;
+}
+
+table[data-theme="dark"] td {
+    color: var(--dark-text);
+}
+
+/* Pagination Styles */
 .pagination {
     display: flex;
-    gap: 10px;
+    gap: 15px;
     justify-content: center;
     align-items: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .pagination-links {
     display: flex;
-    gap: 20px; 
+    gap: 15px;
 }
 
 .pagination-links a {
-    color: #007bff; 
+    color: var(--primary-color);
     text-decoration: none;
     font-size: 16px;
     font-weight: bold;
+    transition: color 0.3s ease;
 }
 
 .pagination-links a:hover {
+    color: #0056b3;
     text-decoration: underline;
 }
 
 .pagination span {
     font-size: 16px;
-    color: #555;
-    font-weight: bold;
-}
-
-/* Chart Sections */
-.chart-section {
-    margin-top: 40px;
-    background: #fff;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-.chart-section h3 {
-    font-size: 20px;
+    color: var(--light-text);
     font-weight: 600;
-    color: #333;
-    margin-bottom: 20px;
 }
 
-canvas {
-    max-width: 100%;
-    height: auto;
+.pagination[data-theme="dark"] span {
+    color: var(--dark-text);
+}
+
+/* Chart Section Layout (Two Columns) */
+.chart-section {
+    margin-top: -20px;
+    background: var(--light-bg);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 12px var(--light-shadow);
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.chart-section[data-theme="dark"] {
+    background: var(--dark-bg);
+    box-shadow: 0 4px 12px var(--dark-shadow);
+}
+
+.chart-left, .chart-right {
+    flex: 1;
+    background: var(--highlight-bg);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px var(--light-shadow);
+}
+
+.chart-left[data-theme="dark"], .chart-right[data-theme="dark"] {
+    background: #333;
+    box-shadow: 0 4px 10px var(--dark-shadow);
+}
+
+.chart-left h3, .chart-right h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--light-text);
+}
+
+.chart-left[data-theme="dark"] h3, .chart-right[data-theme="dark"] h3 {
+    color: var(--dark-text);
+}
+
+/* Chart Size */
+.chart-left canvas, .chart-right canvas {
+    width: 100%;
+    height: 300px;
+    max-height: 400px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px var(--light-shadow);
+    transition: height 0.3s ease;
+}
+
+.chart-left[data-theme="dark"] canvas, .chart-right[data-theme="dark"] canvas {
+    box-shadow: 0 4px 10px var(--dark-shadow);
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.chart-header h3 {
+    margin: 0;
+}
+
+.chart-header button {
+    padding: 10px 15px;
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.chart-header button:hover {
+    background-color: #0056b3;
+}
+
+.chart-header-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    margin-top: 50px;
+}
+
+.chart-header-line h3 {
+    margin: 0;
+}
+
+.chart-header-line button {
+    padding: 10px 15px;
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.chart-header-line button:hover {
+    background-color: #0056b3;
+}
+
+.chart-container {
+    display: flex;
+    gap: 20px; /* Space between charts */
+    justify-content: space-between; /* Spread charts evenly */
+    align-items: flex-start; /* Align items at the top */
+    margin-top: 20px;
+}
+
+.chart-item {
+    flex: 1; 
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px var(--light-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Space between header and canvas */
+}
+.chart-item2 {
+    display: flex; /* Align charts side by side */
+    gap: 20px; /* Space between charts */
+    justify-content: space-between; 
+}
+
+.chart-item[data-theme="dark"] {
+    background: #333; /* Dark theme compatibility */
+    box-shadow: 0 4px 10px var(--dark-shadow);
+}
+
+.chart-item canvas {
+    width: 100%; /* Full width for canvas */
+    height: 300px; /* Fixed height for consistency */
 }
 
 /* Responsive Design */
@@ -138,7 +332,11 @@ canvas {
     }
 
     .page-title {
-        font-size: 24px;
+        font-size: 28px;
+    }
+
+    .history-section h3 {
+        font-size: 22px;
     }
 
     table th, table td {
@@ -146,7 +344,26 @@ canvas {
         padding: 10px;
     }
 
-    .chart-section h3 {
-        font-size: 18px;
+    .pagination {
+        gap: 10px;
+        margin-top: 15px;
     }
+
+    .pagination-links a {
+        font-size: 14px;
+    }
+
+    .chart-section {
+        flex-direction: column;
+    }
+
+    .chart-left, .chart-right {
+        flex: none;
+        width: 100%;
+    }
+
+    .chart-left canvas, .chart-right canvas {
+        height: 250px;
+    }
+    
 }

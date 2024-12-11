@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.db.models import Sum
+from django.db.models import Sum, F
 from django.db.models.functions import TruncMonth, TruncYear
 from .forms import CustomerRegistrationForm, ProfileForm, CustomerPasswordUpdateForm
 from .models import Customer, Profile, Tariff, Consumption, Bill, Payment, BillingDetails
@@ -276,25 +276,29 @@ def view_billing_details(request):
 
 @login_required
 def history(request):
-    # Payments by month
+    # Payments by month (grouped by Payment.paymentDate)
     payments = Payment.objects.filter(bill__customer=request.user)
     payment_by_month = payments.annotate(month=TruncMonth('paymentDate')).values('month').annotate(
         total=Sum('amountPaid')
     ).order_by('month')
 
-    # Usage by month
-    bills = Bill.objects.filter(customer=request.user)
-    usage_by_month = bills.annotate(month=TruncMonth('billDate')).values('month').annotate(
-        total=Sum('totalAmount')
+    # All usage by month (grouped by BillingDetails.billDate)
+    usage_by_month = BillingDetails.objects.filter(bill__customer=request.user).annotate(
+        month=TruncMonth('billDate')
+    ).values('month').annotate(
+        total=Sum('totalConsumption')
     ).order_by('month')
 
-    # Yearly aggregates
+    # Payments by year (grouped by Payment.paymentDate)
     payment_by_year = payments.annotate(year=TruncYear('paymentDate')).values('year').annotate(
         total=Sum('amountPaid')
     ).order_by('year')
 
-    usage_by_year = bills.annotate(year=TruncYear('billDate')).values('year').annotate(
-        total=Sum('totalAmount')
+    # All usage by year (grouped by BillingDetails.billDate)
+    usage_by_year = BillingDetails.objects.filter(bill__customer=request.user).annotate(
+        year=TruncYear('billDate')
+    ).values('year').annotate(
+        total=Sum('totalConsumption')
     ).order_by('year')
 
     # Format data for charts

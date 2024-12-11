@@ -15,10 +15,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const currentTheme = document.body.getAttribute("data-theme");
         const newTheme = currentTheme === "dark" ? "light" : "dark";
 
+        // Update body theme and store the preference in localStorage
         document.body.setAttribute("data-theme", newTheme);
         localStorage.setItem("theme", newTheme);
 
-        updateIcons(newTheme); // Update icons when theme changes
+        // Update icons when theme changes
+        updateIcons(newTheme);
     });
 
     // Function to update sun and moon icons based on the current theme

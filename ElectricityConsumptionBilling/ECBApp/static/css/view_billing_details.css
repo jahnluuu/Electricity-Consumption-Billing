@@ -1,3 +1,9 @@
+/* Default (Light Mode) */
+body {
+    background-color: #fff;
+    color: #333; /* Light text color */
+}
+
 .container {
     display: flex;
     flex-direction: column;
@@ -6,11 +12,12 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+    background-color: #fff;  /* Light background for container */
 }
 
 .page-title {
     font-size: 28px;
-    color: #333;
+    color: #333;  /* Dark color for light mode */
     font-weight: 600;
     text-align: center;
     margin-bottom: 20px;
@@ -30,7 +37,7 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-    background: #fff;
+    background: #fff;  /* Light background for table container */
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -84,6 +91,63 @@ table td {
     background-color: #ff3b58;
 }
 
+/* Dark Mode Styles */
+body[data-theme="dark"] {
+    background-color: #121212;  /* Dark background */
+    color: #fff;  /* Light text color */
+}
+
+body[data-theme="dark"] .container {
+    background-color: #181818;  /* Darker background for container */
+}
+
+body[data-theme="dark"] .page-title {
+    color: #fff;  /* White title text for dark mode */
+}
+
+body[data-theme="dark"] .breadcrumb-item {
+    color: #ff7a38; /* Breadcrumb color */
+}
+
+body[data-theme="dark"] .breadcrumb-item:hover {
+    color: #ff3b58;  /* Hover color */
+}
+
+body[data-theme="dark"] .table-container {
+    background: #333;  /* Dark background for table container */
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+body[data-theme="dark"] table th,
+body[data-theme="dark"] table td {
+    color: #ddd;  /* Light text for table cells */
+    border-color: #444;  /* Darker borders for table */
+}
+
+body[data-theme="dark"] table th {
+    background-color: #555;  /* Darker background for headers */
+    color: #fff;  /* Light color for text in dark mode */
+}
+
+body[data-theme="dark"] table tbody tr:nth-child(even) {
+    background-color: #444;  /* Darker rows for dark mode */
+}
+
+body[data-theme="dark"] table tbody tr:hover {
+    background-color: #555;  /* Hover effect for dark mode */
+}
+
+body[data-theme="dark"] .table-container .btn {
+    background-color: #ff7a38;
+    color: #fff;
+}
+
+body[data-theme="dark"] .table-container .btn:hover {
+    background-color: #ff3b58;
+}
+
+/* Responsive Styles */
 @media (max-width: 768px) {
     .container {
         padding: 15px;

@@ -1,3 +1,5 @@
+<!-- templates/ECBApp/history.html -->
+
 {% extends 'ECBApp/base.html' %}
 {% load static %}
 
@@ -17,49 +19,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>History</title>
-    <link rel="stylesheet" href="{% static 'css/history.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{% static 'css/history.css' %}?v=1.0">
 </head>
 <body>
     <div class="container">
         <h2 class="page-title">Payment and Usage History</h2>
-
-        <div class="chart-section">
-            <h3>Monthly Payments (Histogram)</h3>
-            <canvas id="paymentHistogram"></canvas>
-        </div>
-
-        <div class="chart-section">
-            <h3>Monthly Usage (Histogram)</h3>
-            <canvas id="usageHistogram"></canvas>
-        </div>
-
-        <div class="chart-section">
-            <h3>Yearly Payment Trend (Line Graph)</h3>
-            <canvas id="paymentLineGraph"></canvas>
-        </div>
-
-        <div class="chart-section">
-            <h3>Yearly Usage Trend (Line Graph)</h3>
-            <canvas id="usageLineGraph"></canvas>
+        
+        <div class ="chart-item2">
+            <div class="chart-item">
+                <div class="chart-header">
+                    <h3>Monthly Payments and Usage</h3>
+                    <button id="toggleMonthlyButton" onclick="toggleMonthlyChart()">Show Usage</button>
+                </div>
+                <canvas id="paymentUsageHistogram"></canvas>
+            </div>
+    
+            <div class="chart-item">
+                <div class="chart-header">
+                    <h3>Yearly Payments and Usage</h3>
+                    <button id="toggleYearlyButton" onclick="toggleYearlyChart()">Show Usage</button>
+                </div>
+                <canvas id="paymentUsageLineGraph"></canvas>
+            </div>
         </div>
     </div>
 
+
     <script>
-        // Data from backend
+        // Load data from backend
         const paymentMonths = JSON.parse('{{ payment_months|escapejs }}');
         const paymentTotals = JSON.parse('{{ payment_totals|escapejs }}');
         const usageMonths = JSON.parse('{{ usage_months|escapejs }}');
         const usageTotals = JSON.parse('{{ usage_totals|escapejs }}');
+        const years = JSON.parse('{{ years|escapejs }}');
         const yearlyPaymentData = JSON.parse('{{ yearly_payment_data|escapejs }}');
         const yearlyUsageData = JSON.parse('{{ yearly_usage_data|escapejs }}');
-        const years = JSON.parse('{{ years|escapejs }}');
 
-        // Payment Histogram
-        new Chart(document.getElementById('paymentHistogram').getContext('2d'), {
+        // Monthly Payments and Usage Chart
+        const ctx1 = document.getElementById('paymentUsageHistogram').getContext('2d');
+        const paymentUsageHistogram = new Chart(ctx1, {
             type: 'bar',
             data: {
-                labels: paymentMonths,
+                labels: usageMonths,
                 datasets: [{
                     label: 'Monthly Payments (₱)',
                     data: paymentTotals,
@@ -78,31 +80,9 @@
             }
         });
 
-        // Usage Histogram
-        new Chart(document.getElementById('usageHistogram').getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: usageMonths,
-                datasets: [{
-                    label: 'Monthly Usage (kWh)',
-                    data: usageTotals,
-                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-
-        // Yearly Payment Line Graph
-        new Chart(document.getElementById('paymentLineGraph').getContext('2d'), {
+        // Yearly Payments and Usage Chart
+        const ctx2 = document.getElementById('paymentUsageLineGraph').getContext('2d');
+        const paymentUsageLineGraph = new Chart(ctx2, {
             type: 'line',
             data: {
                 labels: years,
@@ -125,30 +105,34 @@
             }
         });
 
-        // Yearly Usage Line Graph
-        new Chart(document.getElementById('usageLineGraph').getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: years,
-                datasets: [{
-                    label: 'Yearly Usage (kWh)',
-                    data: yearlyUsageData,
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 2,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
+        // Toggle Monthly Chart
+        function toggleMonthlyChart() {
+            const currentLabel = paymentUsageHistogram.data.datasets[0].label;
+            if (currentLabel === 'Monthly Payments (₱)') {
+                paymentUsageHistogram.data.datasets[0].label = 'Monthly Usage (kWh)';
+                paymentUsageHistogram.data.datasets[0].data = usageTotals;
+                document.getElementById('toggleMonthlyButton').innerText = 'Show Payments';
+            } else {
+                paymentUsageHistogram.data.datasets[0].label = 'Monthly Payments (₱)';
+                paymentUsageHistogram.data.datasets[0].data = paymentTotals;
+                document.getElementById('toggleMonthlyButton').innerText = 'Show Usage';
             }
-        });
+            paymentUsageHistogram.update();
+        }
+
+        // Toggle Yearly Chart
+        function toggleYearlyChart() {
+            const currentLabel = paymentUsageLineGraph.data.datasets[0].label;
+            if (currentLabel === 'Yearly Payments (₱)') {
+                paymentUsageLineGraph.data.datasets[0].label = 'Yearly Usage (kWh)';
+                paymentUsageLineGraph.data.datasets[0].data = yearlyUsageData;
+                document.getElementById('toggleYearlyButton').innerText = 'Show Payments';
+            } else {
+                paymentUsageLineGraph.data.datasets[0].label = 'Yearly Payments (₱)';
+                paymentUsageLineGraph.data.datasets[0].data = yearlyPaymentData;
+                document.getElementById('toggleYearlyButton').innerText = 'Show Usage';
+            }
+            paymentUsageLineGraph.update();
+        }
     </script>
-</body>
-</html>
 {% endblock %}
