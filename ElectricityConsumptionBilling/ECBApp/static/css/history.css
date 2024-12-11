@@ -26,6 +26,17 @@
     text-decoration: underline;
 }
 
+.history-section {
+    margin-bottom: 40px;
+}
+
+.history-section h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+}
+
 .table-container {
     display: flex;
     flex-direction: column;
@@ -67,38 +78,6 @@ table td {
     color: #555;
 }
 
-.table-container .btn {
-    padding: 12px 24px;
-    background-color: #ff7a38;
-    color: #fff;
-    border-radius: 5px;
-    text-decoration: none;
-    text-align: center;
-    display: inline-block;
-    margin-top: 20px;
-    font-size: 16px;
-    transition: background-color 0.3s;
-}
-
-.table-container .btn:hover {
-    background-color: #ff3b58;
-}
-
-@media (max-width: 768px) {
-    .container {
-        padding: 15px;
-    }
-
-    table th, table td {
-        font-size: 14px;
-        padding: 10px;
-    }
-
-    .page-title {
-        font-size: 24px;
-    }
-}
-
 .pagination {
     display: flex;
     gap: 10px;
@@ -124,19 +103,50 @@ table td {
     text-decoration: underline;
 }
 
-.pagination a {
-    color: #007bff;
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.pagination a:hover {
-    text-decoration: underline;
-}
-
 .pagination span {
     font-size: 16px;
     color: #555;
     font-weight: bold;
+}
+
+/* Chart Sections */
+.chart-section {
+    margin-top: 40px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.chart-section h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    .page-title {
+        font-size: 24px;
+    }
+
+    table th, table td {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .chart-section h3 {
+        font-size: 18px;
+    }
 }

@@ -14,4 +14,6 @@ urlpatterns = [
     path('payment-failed/', payment_failed, name='payment_failed'),
     path('view-bill/', views.view_bill, name='view_bill'),
     path('view-billing-details/', views.view_billing_details, name='view_billing_details'),  
+
+    path('history/', views.history, name='history'),
 ]

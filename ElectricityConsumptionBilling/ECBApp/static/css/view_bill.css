@@ -14,17 +14,16 @@
     margin-top: -30px;
 }
 
-/* Stat Boxes */
 .stat-boxes {
     display: flex;
-    gap: 20px; /* Spacing between stat boxes */
-    margin-top: 20px; /* Space below the header */
+    gap: 20px; 
+    margin-top: 20px;
     margin-left: 20px;
     margin-right: 20px;
 }
 
 .stat-box {
-    flex: 1; /* Equal width for all stat boxes */
+    flex: 1; 
     padding: 20px;
     background: #fff;
     border-radius: 10px;

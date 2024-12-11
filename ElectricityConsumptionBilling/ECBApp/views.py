@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
-from django.db.models.functions import TruncMonth
+from django.db.models.functions import TruncMonth, TruncYear
 from .forms import CustomerRegistrationForm, ProfileForm, CustomerPasswordUpdateForm
 from .models import Customer, Profile, Tariff, Consumption, Bill, Payment, BillingDetails
 from decimal import Decimal
@@ -215,7 +215,7 @@ def view_bill(request):
     bills = Bill.objects.filter(customer=request.user).order_by('-billDate')
     payments = Payment.objects.filter(bill__customer=request.user)
 
-    paginator = Paginator(bills, 6)  # Display 6 bills per page
+    paginator = Paginator(bills, 6) 
     page_number = request.GET.get('page') or 1
     page_obj = paginator.get_page(page_number)
 
@@ -272,4 +272,47 @@ def view_billing_details(request):
         'page_obj': page_obj,
         'billing_details': billing_details,
         'breadcrumb': breadcrumb,
+    })
+
+@login_required
+def history(request):
+    # Payments by month
+    payments = Payment.objects.filter(bill__customer=request.user)
+    payment_by_month = payments.annotate(month=TruncMonth('paymentDate')).values('month').annotate(
+        total=Sum('amountPaid')
+    ).order_by('month')
+
+    # Usage by month
+    bills = Bill.objects.filter(customer=request.user)
+    usage_by_month = bills.annotate(month=TruncMonth('billDate')).values('month').annotate(
+        total=Sum('totalAmount')
+    ).order_by('month')
+
+    # Yearly aggregates
+    payment_by_year = payments.annotate(year=TruncYear('paymentDate')).values('year').annotate(
+        total=Sum('amountPaid')
+    ).order_by('year')
+
+    usage_by_year = bills.annotate(year=TruncYear('billDate')).values('year').annotate(
+        total=Sum('totalAmount')
+    ).order_by('year')
+
+    # Format data for charts
+    payment_months = [entry['month'].strftime('%b %Y') for entry in payment_by_month]
+    payment_totals = [float(entry['total']) for entry in payment_by_month]
+    usage_months = [entry['month'].strftime('%b %Y') for entry in usage_by_month]
+    usage_totals = [float(entry['total']) for entry in usage_by_month]
+
+    years = [entry['year'].year for entry in payment_by_year]
+    yearly_payment_data = [float(entry['total']) for entry in payment_by_year]
+    yearly_usage_data = [float(entry['total']) for entry in usage_by_year]
+
+    return render(request, 'ECBApp/history.html', {
+        'payment_months': json.dumps(payment_months),
+        'payment_totals': json.dumps(payment_totals),
+        'usage_months': json.dumps(usage_months),
+        'usage_totals': json.dumps(usage_totals),
+        'years': json.dumps(years),
+        'yearly_payment_data': json.dumps(yearly_payment_data),
+        'yearly_usage_data': json.dumps(yearly_usage_data),
     })
