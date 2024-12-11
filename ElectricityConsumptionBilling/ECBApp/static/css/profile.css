@@ -1,15 +1,13 @@
-/* Profile header */
+.spacer {
+    height: 20px; 
+    width: 100%;
+}
+
 .profile-header {
     background: linear-gradient(90deg, #ff3b58, #ff7a38);
     color: #fff;
-    padding: 0;
-    margin: 0;
-    width: 100%;
+    padding: 20px 0;
     text-align: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000;
 }
 
 /* Header text styles */
@@ -17,13 +15,8 @@
     font-size: 30px;
     font-weight: bold;
     margin: 0;
-    padding: 20px 0;
 }
 
-/* Ensure body content starts below the fixed header */
-body {
-    padding-top: 100px;
-}
 
 /* Profile content layout */
 .profile-content {
@@ -35,8 +28,9 @@ body {
 
 /* Profile card styles */
 .profile-card {
+    margin-top: 100px;
     margin: 0 auto;
-    width: 90%;
+    width: 100%;
     max-width: 1200px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     background: #fff;
@@ -91,4 +85,14 @@ body {
 
 .actions .btn:hover {
     opacity: 0.8;
+}
+
+.breadcrumb .breadcrumb-item {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.breadcrumb .breadcrumb-item:hover {
+    text-decoration: underline;
 }

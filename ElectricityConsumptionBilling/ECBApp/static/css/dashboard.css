@@ -73,3 +73,13 @@
     margin-bottom: 2rem;
 }
 
+.breadcrumb .breadcrumb-item {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.breadcrumb .breadcrumb-item:hover {
+    text-decoration: underline;
+}
+

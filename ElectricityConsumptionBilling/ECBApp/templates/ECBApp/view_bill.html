@@ -4,7 +4,7 @@
 
 {% block breadcrumb %}
     {% for crumb in breadcrumb %}
-        <a href="{{ crumb.url }}">{{ crumb.name }}</a>
+        <a href="{{ crumb.url }}" class="breadcrumb-item">{{ crumb.name }}</a>
         {% if not forloop.last %} / {% endif %}
     {% endfor %}
 {% endblock %}
@@ -20,8 +20,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Bill</title>
     <link rel="stylesheet" href="{% static 'css/charts.css' %}">
-    <link rel="stylesheet" href="{% static 'css/view_bill.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/view_bill.css' %}?v=1.0">
 </head>
 <body>
    
@@ -45,45 +45,55 @@
         </div>
 
         <div class="main-content">
-            <!-- Table and Chart Container -->
             <div class="table-chart-container">
-                <!-- Table -->
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Bill ID</th>
-                            <th>Bill Date</th>
-                            <th>Total Amount</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for bill in bills %}
-                        <tr class="{% if bill.status == 'Overdue' %}overdue{% endif %}">
-                            <td>{{ bill.billID}}</td>
-                            <td>{{ bill.billDate }}</td>
-                            <td>₱{{ bill.totalAmount }}</td>
-                            <td>{{ bill.status }}</td>
-                            <td>
-                                {% if bill.status == 'Pending' %}
-                                <a href="{% url 'initiate_payment' bill.billID %}" class="btn">Pay Now</a>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="4">No bills available.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-
-            <!-- Payment Analysis Chart -->
-            <div class="chart-container">
-                <canvas id="paymentAnalysisChart"></canvas>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Bill ID</th>
+                                <th>Bill Date</th>
+                                <th>Total Amount</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bill in page_obj.object_list %}
+                            <tr class="{% if bill.status == 'Overdue' %}overdue{% endif %}">
+                                <td>{{ bill.billID }}</td>
+                                <td>{{ bill.billDate }}</td>
+                                <td>₱{{ bill.totalAmount }}</td>
+                                <td>{{ bill.status }}</td>
+                                <td>
+                                    {% if bill.status == 'Pending' %}
+                                    <a href="{% url 'initiate_payment' bill.billID %}" class="btn">Pay Now</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5">No bills available.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="chart-container">
+                    <canvas id="paymentAnalysisChart"></canvas>
+                </div>
             </div>
-        </div>
+        
+            <div class="pagination">
+                <div class="pagination-links">
+                    {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}" class="breadcrumb-item">[ Current ]</a>
+                    {% endif %}
+                    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                    {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="breadcrumb-item">[ Previous ]</a>
+                    {% endif %}
+                </div>
+            </div>
         </div>
         
     </div>

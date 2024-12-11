@@ -1,7 +1,9 @@
 .main-content {
     display: flex;
-    gap: 5px;
-    align-items: center;
+    flex-direction: column; 
+    gap: 20px;
+    width: 100%;
+    margin: 0 auto;
 }
 
 .container {
@@ -9,6 +11,7 @@
     flex-direction: column;
     gap: 20px;
     width: 100%;
+    margin-top: -30px;
 }
 
 /* Stat Boxes */
@@ -16,6 +19,8 @@
     display: flex;
     gap: 20px; /* Spacing between stat boxes */
     margin-top: 20px; /* Space below the header */
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 .stat-box {
@@ -65,13 +70,15 @@ table td {
 
 
 .btn {
-    padding: 10px 20px;
+    padding: 5px 20px; /* Reduced top and bottom padding */
     background-color: #ff7a38;
     color: #fff;
     border-radius: 5px;
     text-decoration: none;
     text-align: center;
     display: inline-block;
+    line-height: 1.2; /* Adjust line height to further control button height */
+    height: auto; /* Ensure height is automatically adjusted based on content */
 }
 
 .btn:hover {
@@ -86,11 +93,30 @@ table {
 /* Table and Chart Container */
 .table-chart-container {
     display: flex;
-    flex: 2; /* Take up more space compared to the chat */
+    flex-direction: row;
     gap: 20px;
-    width: 98%;
-    overflow-x: auto;
-    margin-right: 100;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.table-container {
+    margin-left: 30px;
+    flex: 2; /* Table takes more space */
+    box-shadow: none; /* Remove shadow */
+    border-radius: 0;
+    margin-top: 19px;
+}
+
+.table-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-container th,
+.table-container td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
 }
 
 .table-chart-container table {
@@ -118,12 +144,63 @@ table {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.chat-container {
-    flex: 1; /* Take less space compared to the table-chart-container */
+.chart-container {
+    flex: 1; /* Chart takes less space */
     background: #fff;
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.pagination {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5px;
+    margin-bottom: 20px;
+}
 
+.pagination-links {
+    display: flex;
+    gap: 20px; /* Space between "Previous" and "Next" */
+}
+
+.pagination-links a {
+    color: #007bff; /* Breadcrumb link color */
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.pagination-links a:hover {
+    text-decoration: underline;
+}
+
+.pagination a {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.pagination a:hover {
+    text-decoration: underline;
+}
+
+.pagination span {
+    font-size: 16px;
+    color: #555;
+    font-weight: bold;
+}
+
+
+.breadcrumb .breadcrumb-item {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.breadcrumb .breadcrumb-item:hover {
+    text-decoration: underline;
+}

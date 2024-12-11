@@ -1,86 +1,63 @@
+{% extends 'ECBApp/base.html' %}
 {% load static %}
+{% load custom_filters %}
+
+{% block breadcrumb %}
+    {% for crumb in breadcrumb %}
+        <a href="{{ crumb.url }}" class="breadcrumb-item">{{ crumb.name }}</a>
+        {% if not forloop.last %} / {% endif %}
+    {% endfor %}
+{% endblock %}
+
+{% block header_title %}
+    Pay Bill
+{% endblock %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment</title>
-    <link rel="stylesheet" href="{% static 'css/initiate_payment.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/initiate_payment.css' %}?v=1.0">
 </head>
 <body>
-    <div class="container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="logo">
-                <img src="{% static 'images/ecblogo.png' %}" alt="Logo">
-                <h2>Electricity Consumption<br>Bill</h2>
-            </div>
-            <nav class="menu">
-                <a href="{% url 'dashboard' %}">
-                    <i class="fas fa-home"></i> Home
-                </a>
-                <a href="#">
-                    <i class="fas fa-chart-bar"></i> Reports
-                </a>
-                <a href="#">
-                    <i class="fas fa-user-cog"></i> Manage User
-                </a>
-                <a href="{% url 'view_bill' %}">
-                    <i class="fas fa-file-invoice-dollar"></i> View Bill
-                </a>
-                <a href="{% url 'profile' %}">
-                    <i class="fas fa-user-circle"></i> Profile
-                </a>
-            </nav>
-            <a href="{% url 'logout' %}" class="logout-btn">
-                Logout
-            </a>
-        </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Header -->
-            <div class="header">
-                <div class="breadcrumb">
-                    <p>Pages / Payment</p>
-                    <h1>Payment</h1>
-                </div>
-                <div class="user-settings">
-                    <input type="text" placeholder="Search">
-                    <div class="toggle-theme">
-                        <i class="fas fa-sun"></i>
-                        <i class="fas fa-moon"></i>
-                    </div>
-                    <img src="{% static 'images/profile-pic.png' %}" alt="User">
-                </div>
-            </div>
-
-            <!-- Payment Section -->
+    <div class="container-payment">
+        <div class="main-content-payment">
             <div class="payment-section">
+                <!-- Bill Details -->
                 <div class="pay_bill">
-                    <h2>Pay Your Bill</h2>
-                    <p>Bill Date: {{ bill.billDate }}</p>
-                    <p>Amount Due: ₱{{ bill.totalAmount }}</p>
+                    <h2 class="section-title">Pay Your Bill</h2>
+                    <p><strong>Bill Date:</strong> {{ bill.billDate }}</p>
+                    <p><strong>Amount Due:</strong> <span class="amount-due">₱{{ bill.totalAmount }}</span></p>
                 </div>
-                
+    
+                <!-- Payment Form -->
                 <div class="form">
-                    <form method="post">
+                    <form method="post" class="payment-form">
                         {% csrf_token %}
-                        <label for="amount_paid">Amount to Pay:</label>
-                        <input type="number" id="amount_paid" name="amount_paid" step="0.01" max="{{ bill.totalAmount }}" required>
-
-                        <label for="payment_method">Payment Method:</label>
-                        <select id="payment_method" name="payment_method" required>
-                            <option value="Cash">Cash</option>
-                            <option value="Credit Card">Credit Card</option>
-                            <option value="Online Transfer">Online Transfer</option>
-                        </select>
-
-                        <label for="payment_note">Payment Note (optional):</label>
-                        <textarea id="payment_note" name="payment_note"></textarea>
-
-                        <button type="submit" class="btn">Submit Payment</button>
+                        <fieldset>
+                            <legend>Payment Details</legend>
+    
+                            <label for="amount_paid">Amount to Pay:</label>
+                            <input type="number" id="amount_paid" name="amount_paid" step="0.01" 
+                                   max="{{ bill.totalAmount }}" placeholder="Enter amount" required>
+    
+                            <label for="payment_method">Payment Method:</label>
+                            <select id="payment_method" name="payment_method" required>
+                                <option value="" disabled selected>Select a method</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Credit Card">Credit Card</option>
+                                <option value="Online Transfer">Online Transfer</option>
+                            </select>
+    
+                            <label for="payment_note">Payment Note (Optional):</label>
+                            <textarea id="payment_note" name="payment_note" 
+                                      placeholder="Add a note about your payment (if any)"></textarea>
+    
+                            <button type="submit" class="btn-submit">Submit Payment</button>
+                        </fieldset>
                     </form>
                 </div>
             </div>
@@ -88,3 +65,4 @@
     </div>
 </body>
 </html>
+{% endblock %}

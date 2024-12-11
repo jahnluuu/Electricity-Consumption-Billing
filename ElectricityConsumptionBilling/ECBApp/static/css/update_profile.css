@@ -1,11 +1,14 @@
-.container {
+.container-update {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    width: 100%;
-    max-width: 1200px; /* Max width to limit the form size */
-    margin: 0 auto; /* Center the container horizontally */
+    justify-content: center;
     align-items: center;
+    gap: 20px;
+    padding: 20px;
+    width: 100%;
+    max-width: 1000px; /* Maximum width to maintain design consistency */
+    margin: 0 auto;
+    box-sizing: border-box;
 }
 
 .form-card {
@@ -41,7 +44,7 @@ form legend {
 }
 
 form input, form select, form textarea {
-    width: 100%;
+    width: 96.5%;
     padding: 12px;
     margin-bottom: 15px;
     border: 1px solid #ddd;
@@ -64,25 +67,12 @@ form button:hover {
     background: linear-gradient(90deg, #eb082a, #f3590b);
 }
 
-.messages {
-    margin-top: 20px;
+.breadcrumb .breadcrumb-item {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 16px;
 }
 
-.alert {
-    padding: 12px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    font-size: 14px;
-}
-
-.alert-success {
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-.alert-error, .alert-danger {
-    background: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+.breadcrumb .breadcrumb-item:hover {
+    text-decoration: underline;
 }

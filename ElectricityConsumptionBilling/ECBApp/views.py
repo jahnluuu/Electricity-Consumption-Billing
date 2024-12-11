@@ -14,6 +14,7 @@ import stripe
 from django.urls import reverse
 from django.shortcuts import render
 from django.contrib.auth import update_session_auth_hash
+from django.core.paginator import Paginator
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 def register(request):
@@ -116,7 +117,7 @@ def update_profile(request):
         {
             'profile_form': profile_form,
             'password_form': password_form,
-            'breadcrumb': breadcrumb,  # Add breadcrumb to the context
+            'breadcrumb': breadcrumb,  
         }
     )
 # @login_required
@@ -141,7 +142,13 @@ def update_profile(request):
 @login_required
 def initiate_payment(request, bill_id):
     bill = get_object_or_404(Bill, billID=bill_id, customer=request.user)
-
+    
+    breadcrumb = [
+        {'name': 'Home', 'url': reverse('dashboard')}, 
+        {'name': 'View Bill', 'url': reverse('view_bill')},
+        {'name': f'Pay Bill {bill_id}', 'url': reverse('initiate_payment', args=[bill_id])},
+    ]
+    
     if bill.status == 'Paid':
         messages.error(request, 'This bill is already paid.')
         return redirect('view_bill')
@@ -173,7 +180,10 @@ def initiate_payment(request, bill_id):
         messages.success(request, 'Payment successful!')
         return redirect('view_bill')
 
-    return render(request, 'ECBApp/initiate_payment.html', {'bill': bill})
+    return render(request, 'ECBApp/initiate_payment.html', {
+        'bill': bill,
+        'breadcrumb': breadcrumb,
+    })
 
 
 @login_required
@@ -202,8 +212,12 @@ def payment_failed(request):
 @login_required
 def view_bill(request):
     
-    bills = Bill.objects.filter(customer=request.user)
+    bills = Bill.objects.filter(customer=request.user).order_by('-billDate')
     payments = Payment.objects.filter(bill__customer=request.user)
+
+    paginator = Paginator(bills, 6)  # Display 6 bills per page
+    page_number = request.GET.get('page') or 1
+    page_obj = paginator.get_page(page_number)
 
     pending_and_overdue_bills = bills.filter(status__in=['Pending', 'Overdue'])
     total_pending = pending_and_overdue_bills.aggregate(total=Sum('totalAmount'))['total'] or Decimal('0.0')
@@ -228,6 +242,7 @@ def view_bill(request):
     ]
 
     return render(request, 'ECBApp/view_bill.html', {
+        'page_obj': page_obj,
         'bills': bills,
         'total_due': total_pending,
         'total_paid': total_paid,
@@ -244,12 +259,17 @@ def view_billing_details(request):
     bills = Bill.objects.filter(customer=request.user)
     billing_details = BillingDetails.objects.filter(bill__in=bills)
 
+    paginator = Paginator(billing_details, 8)  # Display 6 bills per page
+    page_number = request.GET.get('page') or 1
+    page_obj = paginator.get_page(page_number)
+
     breadcrumb = [
     {'name': 'Home', 'url': reverse('dashboard')}, 
-    {'name': 'View Bill Details', 'url': '/view-billing-details/'}
+    {'name': 'Bill Details', 'url': '/view-billing-details/'}
     ]
 
     return render(request, 'ECBApp/view_billing_details.html', {
+        'page_obj': page_obj,
         'billing_details': billing_details,
         'breadcrumb': breadcrumb,
     })
