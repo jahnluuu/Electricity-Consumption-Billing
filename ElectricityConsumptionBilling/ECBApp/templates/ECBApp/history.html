@@ -24,20 +24,35 @@
 </head>
 <body>
     <div class="container">
-        <h2 class="page-title">Payment and Usage History</h2>
+        <h2 class="page-title">Payment and Usage History </h2>
         
         <div class ="chart-item2">
             <div class="chart-item">
                 <div class="chart-header">
-                    <h3>Monthly Payments and Usage</h3>
+                    <h3>Monthly</h3>
                     <button id="toggleMonthlyButton" onclick="toggleMonthlyChart()">Show Usage</button>
                 </div>
                 <canvas id="paymentUsageHistogram"></canvas>
+                <div class="pagination"> 
+                    <span class="step-links"> 
+                        {% if page_obj.has_previous %} 
+                        <a href="?page={{ page_obj.previous_page_number }}">previous</a> 
+                        {% endif %} 
+                        
+                        <span class="current"> 
+                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}. 
+                        </span> 
+                        
+                        {% if page_obj.has_next %} 
+                        <a href="?page={{ page_obj.next_page_number }}">next</a> 
+                        {% endif %} 
+                    </span> 
+                </div>
             </div>
     
             <div class="chart-item">
                 <div class="chart-header">
-                    <h3>Yearly Payments and Usage</h3>
+                    <h3>Yearly</h3>
                     <button id="toggleYearlyButton" onclick="toggleYearlyChart()">Show Usage</button>
                 </div>
                 <canvas id="paymentUsageLineGraph"></canvas>
@@ -61,7 +76,7 @@
         const paymentUsageHistogram = new Chart(ctx1, {
             type: 'bar',
             data: {
-                labels: usageMonths,
+                labels: paymentMonths, // Use aligned months
                 datasets: [{
                     label: 'Monthly Payments (₱)',
                     data: paymentTotals,
