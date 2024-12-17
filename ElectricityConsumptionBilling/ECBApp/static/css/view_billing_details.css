@@ -23,15 +23,18 @@ body {
     margin-bottom: 20px;
 }
 
-.breadcrumb-item {
-    color: #007bff;
+.breadcrumb .breadcrumb-item {
+    color: #ff7a38;
     text-decoration: none;
     font-size: 16px;
 }
 
-.breadcrumb-item:hover {
-    text-decoration: underline;
+.breadcrumb .breadcrumb-item:hover {
+    text-decoration: none;
+    color: #ff3b58;
 }
+
+
 
 .table-container {
     display: flex;
@@ -111,6 +114,7 @@ body[data-theme="dark"] .breadcrumb-item {
 
 body[data-theme="dark"] .breadcrumb-item:hover {
     color: #ff3b58;  /* Hover color */
+    text-decoration: none;
 }
 
 body[data-theme="dark"] .table-container {
